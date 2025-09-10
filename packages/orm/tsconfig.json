@@ -1,0 +1,17 @@
+{
+  "extends": "../config/dist/ts-config/shared.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "generated/**/*",  // generated 파일들 제외
+    "**/*.test.ts",
+    "**/*.spec.ts",
+  ]
+}

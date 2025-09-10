@@ -1,0 +1,14 @@
+// 루트 tsconfig.json - 프로젝트 참조만 관리
+
+// 루트에서 전체 프로젝트 빌드
+// tsc --build
+
+// 의존성 순서대로 빌드됨
+
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/config" },
+    { "path": "./packages/orm" }
+  ]
+}

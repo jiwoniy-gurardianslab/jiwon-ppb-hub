@@ -1,0 +1,43 @@
+{
+  "name": "@ppb/orm",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.cjs"
+    },
+    "./generated/ppb": {
+      "types": "./generated/ppb/index.d.ts",
+      "default": "./generated/ppb/index.js"
+    }
+  },
+  "scripts": {
+    "test": "jest",
+    "db:pull:ppb": "prisma db pull --schema=prisma/ppb/schema.prisma",
+    "db:generate:ppb": "prisma generate --schema=prisma/ppb/schema.prisma"
+  },
+  "keywords": ["ppb", "orm"],
+  "files": ["dist", "generated"],
+  "author": "jiwoniy@guardianslab.com",
+  "license": "ISC",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma"
+    ]
+  },
+  "devDependencies": {
+    "prisma": "^6.15.0",
+    "@ppb/config": "workspace:*"
+  },
+  "dependencies": {
+    "@prisma/client": "6.15.0"
+  }
+}

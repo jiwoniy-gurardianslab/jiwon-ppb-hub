@@ -1,0 +1,29 @@
+{
+  "name": "@ppb/config",
+  "version": "1.0.0",
+  "description": "Shared configuration for TypeScript, Jest, ESLint, and Prettier", 
+  "main": "./dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./jest/base": {
+      "import": "./dist/jest/base.js",
+      "require": "./dist/jest/base.js"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "create:json": "node scripts/generate-json-configs.js",
+    "build": "tsc --build build.json && pnpm run create:json"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "jiwoniy@guardianslab.com",
+  "license": "ISC"
+}

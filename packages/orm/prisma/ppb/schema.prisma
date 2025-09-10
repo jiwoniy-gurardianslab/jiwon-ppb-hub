@@ -836,7 +836,6 @@ model ppb_archive_settlements {
   @@index([settlement_type], map: "index_ppb_archive_settlements_on_settlement_type")
 }
 
-// ppb_brands
 model Brands {
   id                    BigInt   @id @default(autoincrement())
   storeId               String?  @unique(map: "index_ppb_brands_on_store_id") @db.VarChar
@@ -1680,160 +1679,173 @@ model ppb_order_sub_items {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model ppb_orders {
+model Orders {
   id                                BigInt    @id @default(autoincrement())
-  token_customer                    String?   @unique(map: "index_ppb_orders_on_token_customer") @db.VarChar(64)
-  token_franchise                   String?   @unique(map: "index_ppb_orders_on_token_franchise") @db.VarChar(64)
-  store_id                          String?   @db.VarChar
-  ppb_franchise_id                  Int?
-  customer_phone                    String?   @db.VarChar
-  customer_name                     String?   @db.VarChar
-  shopify_name                      String?   @unique(map: "index_ppb_orders_on_shopify_name") @db.VarChar
-  ppb_name                          String?   @db.VarChar
-  ppb_tracking_number               String?   @db.VarChar
-  ppb_tracking_number_return        String?   @db.VarChar
-  review_point                      Float?
-  review_comment                    String?
-  review_updated_at                 DateTime? @db.Timestamp(6)
-  accepted_by                       String?   @db.VarChar
-  status_customer                   String?   @default("pending") @db.VarChar(32)
-  status_franchise                  String?   @default("pending") @db.VarChar(32)
-  status_shipping                   String?   @default("pending") @db.VarChar(32)
-  status_ppb                        String?   @default("pending") @db.VarChar(32)
-  status_shipping_return            String?   @default("pending") @db.VarChar(16)
-  status_customer_updated_at        DateTime? @db.Timestamp(6)
-  status_franchise_updated_at       DateTime? @db.Timestamp(6)
-  status_shipping_updated_at        DateTime? @db.Timestamp(6)
-  status_ppb_updated_at             DateTime? @db.Timestamp(6)
-  shipping_carrier                  String?   @db.VarChar
-  delivered_at                      DateTime? @db.Timestamp(6)
-  shopify_created_at                DateTime? @db.Timestamp(6)
-  shipping_started_at               DateTime? @db.Timestamp(6)
-  shipping_returned_at              DateTime? @db.Timestamp(6)
-  paid_at                           DateTime? @db.Timestamp(6)
-  updated_at                        DateTime  @db.Timestamp(6)
-  created_at                        DateTime  @db.Timestamp(6)
-  shopify_total_price               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_total_krw               Decimal?  @default(0.0) @db.Decimal
-  status_logs                       Json?     @default("{}") @db.Json
-  line_items                        Json?     @default("[]") @db.Json
-  is_test                           Boolean?  @default(false)
-  returned_line_items               Json?     @default("[]") @db.Json
-  status_payment                    String?   @default("pending") @db.VarChar(32)
-  channel_id                        Int?
-  shopify_order_id                  Int?
-  total_refund_amount               Decimal?  @default(0.0) @db.Decimal
-  total_shipping_price              Decimal?  @default(0.0) @db.Decimal
-  cost_total                        Decimal?  @default(0.0) @db.Decimal
-  cost_order                        Decimal?  @default(0.0) @db.Decimal
-  cost_refund                       Decimal?  @default(0.0) @db.Decimal
-  cost_shipping                     Decimal?  @default(0.0) @db.Decimal
-  cost_updated_at                   DateTime? @db.Timestamp(6)
-  vat_custom                        Decimal?  @default(0.0) @db.Decimal
+  tokenCustomer                    String?   @unique(map: "index_ppb_orders_on_token_customer") @db.VarChar(64)
+  tokenFranchise                   String?   @unique(map: "index_ppb_orders_on_token_franchise") @db.VarChar(64)
+  // 주의 -- store_id => ppb_franchise_id와 다르다!!!!!! => 사용하지 않는것 같음
+  storeId                          String?   @db.VarChar
+  // ppb 제거
+  franchiseId                  Int?
+  customerPhone                    String?   @db.VarChar
+  customerName                     String?   @db.VarChar
+  shopifyName                      String?   @unique(map: "index_ppb_orders_on_shopify_name") @db.VarChar
+  ppbName                          String?   @db.VarChar
+  // ppb 제거
+  trackingNumber               String?   @db.VarChar
+  trackingNumberReturn        String?   @db.VarChar
+  reviewPoint                      Float?
+  reviewComment                    String?
+  reviewUpdatedAt                 DateTime? @db.Timestamp(6)
+  acceptedBy                       String?   @db.VarChar
+  statusCustomer                   String?   @default("pending") @db.VarChar(32)
+  statusFranchise                  String?   @default("pending") @db.VarChar(32)
+  statusShipping                   String?   @default("pending") @db.VarChar(32)
+  statusPpb                        String?   @default("pending") @db.VarChar(32)
+  statusShippingReturn            String?   @default("pending") @db.VarChar(16)
+  statusCustomerUpdatedAt        DateTime? @db.Timestamp(6)
+  statusFranchiseUpdatedAt       DateTime? @db.Timestamp(6)
+  statusShippingUpdatedAt        DateTime? @db.Timestamp(6)
+  statusPpbUpdatedAt             DateTime? @db.Timestamp(6)
+  shippingCarrier                  String?   @db.VarChar
+  deliveredAt                      DateTime? @db.Timestamp(6)
+  shopifyCreatedAt                DateTime? @db.Timestamp(6)
+  shippingStartedAt               DateTime? @db.Timestamp(6)
+  shippingReturnedAt              DateTime? @db.Timestamp(6)
+  paidAt                           DateTime? @db.Timestamp(6)
+  updatedAt                        DateTime  @db.Timestamp(6)
+  createdAt                        DateTime  @db.Timestamp(6)
+  shopifyTotalPrice               Decimal?  @default(0.0) @db.Decimal
+  ppbPriceTotalKrw               Decimal?  @default(0.0) @db.Decimal
+  statusLogs                       Json?     @default("{}") @db.Json
+
+  // 정규화로 인해 쓰지 않을 예정
+  // lineItems                        Json?     @default("[]") @db.Json
+  isTest                           Boolean?  @default(false)
+  returnedLineItems               Json?     @default("[]") @db.Json
+  statusPayment                    String?   @default("pending") @db.VarChar(32)
+  channelId                        Int?
+  shopifyOrderId                  Int?
+  totalRefundAmount               Decimal?  @default(0.0) @db.Decimal
+  totalShippingPrice              Decimal?  @default(0.0) @db.Decimal
+  costTotal                        Decimal?  @default(0.0) @db.Decimal
+  costOrder                        Decimal?  @default(0.0) @db.Decimal
+  costRefund                       Decimal?  @default(0.0) @db.Decimal
+  costShipping                     Decimal?  @default(0.0) @db.Decimal
+  costUpdatedAt                   DateTime? @db.Timestamp(6)
+  vatCustom                        Decimal?  @default(0.0) @db.Decimal
   adjust                            Decimal?  @default(0.0) @db.Decimal
-  ppb_price_total                   Decimal?  @default(0.0) @db.Decimal
-  ppb_price_cancel_refund           Decimal?  @default(0.0) @db.Decimal
-  ppb_price_discounts               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_sales                   Decimal?  @default(0.0) @db.Decimal
-  ppb_price_vat                     Decimal?  @default(0.0) @db.Decimal
-  ppb_price_net_sales               Decimal?  @default(0.0) @db.Decimal
-  ppb_revenue                       Decimal?  @default(0.0) @db.Decimal
-  ppb_price_cancel_refund_krw       Decimal?  @default(0.0) @db.Decimal
-  ppb_price_discounts_krw           Decimal?  @default(0.0) @db.Decimal
-  ppb_price_sales_krw               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_vat_krw                 Decimal?  @default(0.0) @db.Decimal
-  ppb_price_net_sales_krw           Decimal?  @default(0.0) @db.Decimal
-  status_shipping_return_updated_at DateTime? @db.Timestamp(6)
-  utm_source                        String?   @db.VarChar
-  utm_medium                        String?   @db.VarChar
-  utm_campaign                      String?   @db.VarChar
-  utm_content                       String?   @db.VarChar
-  customer_canceled_at              DateTime? @db.Timestamp(6)
-  last_refunded_at                  DateTime? @db.Timestamp(6)
-  is_postpaid                       Boolean?  @default(false)
-  is_express                        Boolean?  @default(false)
-  user_id                           Int?
-  review_images                     Json?     @db.Json
-  review_videos                     Json?     @db.Json
-  app_key                           String?   @default("customer") @db.VarChar
-  ppb_coupon_id                     Int?
-  order_discount_price              Decimal?  @default(0.0) @db.Decimal
-  app_build_number                  Int?      @default(0)
-  deep_link                         String?   @db.VarChar
-  v_line_items                      Json?     @default("[]") @db.Json
-  gift_products                     Json      @default("[]") @db.Json
-  exclude_return                    Boolean?  @default(false)
-  skus_returned                     Json      @default("{}") @db.Json
-  noshowed_at                       DateTime? @db.Timestamp(6)
-  noshow_reason                     String?
-  price_group_id                    Int?
+  // ppb 제거
+  priceTotal                   Decimal?  @default(0.0) @db.Decimal
+  priceCancelrefund           Decimal?  @default(0.0) @db.Decimal
+  priceDiscounts               Decimal?  @default(0.0) @db.Decimal
+  priceSales                   Decimal?  @default(0.0) @db.Decimal
+  priceVat                     Decimal?  @default(0.0) @db.Decimal
+  priceNetSales               Decimal?  @default(0.0) @db.Decimal
+  revenue                       Decimal?  @default(0.0) @db.Decimal
+  priceCancelRefundKrw       Decimal?  @default(0.0) @db.Decimal
+  priceDiscountsKrw           Decimal?  @default(0.0) @db.Decimal
+  priceSalesKrw               Decimal?  @default(0.0) @db.Decimal
+  priceVatKrw                 Decimal?  @default(0.0) @db.Decimal
+  priceNetSalesKrw           Decimal?  @default(0.0) @db.Decimal
+
+  statusShippingReturnUpdatedAt DateTime? @db.Timestamp(6)
+  utmSource                        String?   @db.VarChar
+  utmMedium                        String?   @db.VarChar
+  utmCampaign                      String?   @db.VarChar
+  utmContent                       String?   @db.VarChar
+  customerCanceledAt              DateTime? @db.Timestamp(6)
+  lastRefundedAt                  DateTime? @db.Timestamp(6)
+  isPostpaid                       Boolean?  @default(false)
+  isExpress                        Boolean?  @default(false)
+  userId                           Int?
+  reviewImages                     Json?     @db.Json
+  reviewVideos                     Json?     @db.Json
+  appKey                           String?   @default("customer") @db.VarChar
+  // ppb 제거
+  couponId                     Int?
+  orderDiscount_price              Decimal?  @default(0.0) @db.Decimal
+  appBuild_number                  Int?      @default(0)
+  deepLink                         String?   @db.VarChar
+  // 정규화 해서 안쓸예정 = 로직에서 flat
+  // vLineItems                      Json?     @default("[]") @db.Json
+  giftProducts                     Json      @default("[]") @db.Json
+  excludeReturn                    Boolean?  @default(false)
+  skusReturned                     Json      @default("{}") @db.Json
+  noshowedAt                       DateTime? @db.Timestamp(6)
+  noshowReason                     String?
+  priceGroupId                    Int?
   currency                          String?   @default("krw") @db.VarChar
   fxrate                            Decimal?  @default(0.0) @db.Decimal
-  total_tax                         Decimal?  @default(0.0) @db.Decimal
-  taxes_included                    Boolean?  @default(true)
-  ppb_tracking_number_re            String?   @db.VarChar
-  status_shipping_re                String?   @default("pending") @db.VarChar(16)
-  status_shipping_re_updated_at     DateTime? @db.Timestamp(6)
-  re_delivered_at                   DateTime? @db.Timestamp(6)
-  shipping_carrier_re               String?   @db.VarChar
-  shipping_re_started_at            DateTime? @db.Timestamp(6)
-  order_type                        String?   @db.VarChar(32)
-  status_okpos                      String?   @default("pending") @db.VarChar
-  status_okpos_updated_at           DateTime? @db.Timestamp(6)
-  customer_country                  String?   @db.VarChar
-  customer_state                    String?   @db.VarChar
-  customer_address1                 String?   @db.VarChar
-  customer_address2                 String?   @db.VarChar
-  customer_zip                      String?   @db.VarChar
-  customer_city                     String?   @db.VarChar
-  okpos_order_no                    String?   @unique(map: "index_ppb_orders_on_okpos_order_no") @db.VarChar
-  franchise_denied_at               DateTime? @db.Timestamp(6)
-  sc_order_id                       String?   @db.VarChar
-  sc_sent_at                        DateTime? @db.Timestamp(6)
-  sc_error_at                       DateTime? @db.Timestamp(6)
-  is_rx_approved                    Boolean?  @default(false)
-  ppb_compare_at_price_total        Decimal?  @db.Decimal
-  ppb_compare_at_price_total_krw    Decimal?  @db.Decimal
-  point_discount_price              Decimal?  @default(0.0) @db.Decimal
-  is_in_franchise_stock             Boolean?  @default(false)
-  shipping_order_id                 BigInt?
-  packaging_required                Boolean   @default(false)
-  franchise_prepared_at             DateTime? @db.Timestamp(6)
+  totalTax                         Decimal?  @default(0.0) @db.Decimal
+  taxesIncluded                    Boolean?  @default(true)
+  // ppb 제거
+  trackingNumberRe            String?   @db.VarChar
+  statusShippingRe                String?   @default("pending") @db.VarChar(16)
+  statusShippingRe_updatedAt     DateTime? @db.Timestamp(6)
+  reDeliveredAt                   DateTime? @db.Timestamp(6)
+  shippingCarrierRe               String?   @db.VarChar
+  shippingReStartedAt            DateTime? @db.Timestamp(6)
+  orderType                        String?   @db.VarChar(32)
+  statusOkpos                      String?   @default("pending") @db.VarChar
+  statusOkposUpdatedAt           DateTime? @db.Timestamp(6)
+  customerCountry                  String?   @db.VarChar
+  customerState                    String?   @db.VarChar
+  customerAddress1                 String?   @db.VarChar
+  customerAddress2                 String?   @db.VarChar
+  customerZip                      String?   @db.VarChar
+  customerCity                     String?   @db.VarChar
+  okposOrderNo                    String?   @unique(map: "index_ppb_orders_on_okpos_order_no") @db.VarChar
+  franchiseDeniedAt               DateTime? @db.Timestamp(6)
+  scOrderId                       String?   @db.VarChar
+  scSentAt                        DateTime? @db.Timestamp(6)
+  scErrorAt                       DateTime? @db.Timestamp(6)
+  isRxApproved                    Boolean?  @default(false)
+  // ppb 제거
+  compareAtPriceTotal        Decimal?  @db.Decimal
+  compareAtPriceTotalKrw    Decimal?  @db.Decimal
+  pointDiscountPrice              Decimal?  @default(0.0) @db.Decimal
+  isInFranchiseStock             Boolean?  @default(false)
+  shippingOrderId                 BigInt?
+  packagingRequired                Boolean   @default(false)
+  franchisePreparedAt             DateTime? @db.Timestamp(6)
 
-  @@index([app_key], map: "index_ppb_orders_on_app_key")
-  @@index([channel_id], map: "index_ppb_orders_on_channel_id")
-  @@index([created_at], map: "index_ppb_orders_on_created_at")
-  @@index([customer_canceled_at], map: "index_ppb_orders_on_customer_canceled_at")
-  @@index([franchise_denied_at], map: "index_ppb_orders_on_franchise_denied_at")
-  @@index([is_in_franchise_stock], map: "index_ppb_orders_on_is_in_franchise_stock")
-  @@index([is_rx_approved], map: "index_ppb_orders_on_is_rx_approved")
-  @@index([is_test], map: "index_ppb_orders_on_is_test")
-  @@index([order_type], map: "index_ppb_orders_on_order_type")
-  @@index([packaging_required], map: "index_ppb_orders_on_packaging_required")
-  @@index([ppb_franchise_id], map: "index_ppb_orders_on_ppb_franchise_id")
-  @@index([ppb_name], map: "index_ppb_orders_on_ppb_name")
-  @@index([ppb_tracking_number], map: "index_ppb_orders_on_ppb_tracking_number")
-  @@index([ppb_tracking_number_re], map: "index_ppb_orders_on_ppb_tracking_number_re")
-  @@index([ppb_tracking_number_return], map: "index_ppb_orders_on_ppb_tracking_number_return")
-  @@index([price_group_id], map: "index_ppb_orders_on_price_group_id")
-  @@index([sc_error_at], map: "index_ppb_orders_on_sc_error_at")
-  @@index([sc_order_id], map: "index_ppb_orders_on_sc_order_id")
-  @@index([sc_sent_at], map: "index_ppb_orders_on_sc_sent_at")
-  @@index([shipping_order_id], map: "index_ppb_orders_on_shipping_order_id")
-  @@index([shipping_returned_at], map: "index_ppb_orders_on_shipping_returned_at")
-  @@index([shipping_started_at], map: "index_ppb_orders_on_shipping_started_at")
-  @@index([status_customer], map: "index_ppb_orders_on_status_customer")
-  @@index([status_franchise], map: "index_ppb_orders_on_status_franchise")
-  @@index([status_okpos], map: "index_ppb_orders_on_status_okpos")
-  @@index([status_payment], map: "index_ppb_orders_on_status_payment")
-  @@index([status_ppb], map: "index_ppb_orders_on_status_ppb")
-  @@index([status_shipping], map: "index_ppb_orders_on_status_shipping")
-  @@index([status_shipping_re], map: "index_ppb_orders_on_status_shipping_re")
-  @@index([status_shipping_return], map: "index_ppb_orders_on_status_shipping_return")
-  @@index([store_id], map: "index_ppb_orders_on_store_id")
-  @@index([user_id], map: "index_ppb_orders_on_user_id")
-  @@index([utm_campaign], map: "index_ppb_orders_on_utm_campaign")
-  @@index([utm_source], map: "index_ppb_orders_on_utm_source")
+  @@index([appKey], map: "index_ppb_orders_on_app_key")
+  @@index([channelId], map: "index_ppb_orders_on_channel_id")
+  @@index([createdAt], map: "index_ppb_orders_on_created_at")
+  @@index([customerCanceledAt], map: "index_ppb_orders_on_customer_canceled_at")
+  @@index([franchiseDeniedAt], map: "index_ppb_orders_on_franchise_denied_at")
+  @@index([isInFranchiseStock], map: "index_ppb_orders_on_is_in_franchise_stock")
+  @@index([isRxApproved], map: "index_ppb_orders_on_is_rx_approved")
+  @@index([isTest], map: "index_ppb_orders_on_is_test")
+  @@index([orderType], map: "index_ppb_orders_on_order_type")
+  @@index([packagingRequired], map: "index_ppb_orders_on_packaging_required")
+  @@index([franchiseId], map: "index_ppb_orders_on_ppb_franchise_id")
+  @@index([ppbName], map: "index_ppb_orders_on_ppb_name")
+  @@index([trackingNumber], map: "index_ppb_orders_on_ppb_tracking_number")
+  @@index([trackingNumberRe], map: "index_ppb_orders_on_ppb_tracking_number_re")
+  @@index([trackingNumberReturn], map: "index_ppb_orders_on_ppb_tracking_number_return")
+  @@index([priceGroupId], map: "index_ppb_orders_on_price_group_id")
+  @@index([scErrorAt], map: "index_ppb_orders_on_sc_error_at")
+  @@index([scOrderId], map: "index_ppb_orders_on_sc_order_id")
+  @@index([scSentAt], map: "index_ppb_orders_on_sc_sent_at")
+  @@index([shippingOrderId], map: "index_ppb_orders_on_shipping_order_id")
+  @@index([shippingReturnedAt], map: "index_ppb_orders_on_shipping_returned_at")
+  @@index([shippingStartedAt], map: "index_ppb_orders_on_shipping_started_at")
+  @@index([statusCustomer], map: "index_ppb_orders_on_status_customer")
+  @@index([statusFranchise], map: "index_ppb_orders_on_status_franchise")
+  @@index([statusOkpos], map: "index_ppb_orders_on_status_okpos")
+  @@index([statusPayment], map: "index_ppb_orders_on_status_payment")
+  @@index([statusPpb], map: "index_ppb_orders_on_status_ppb")
+  @@index([statusShipping], map: "index_ppb_orders_on_status_shipping")
+  @@index([statusShippingRe], map: "index_ppb_orders_on_status_shipping_re")
+  @@index([statusShippingReturn], map: "index_ppb_orders_on_status_shipping_return")
+  @@index([storeId], map: "index_ppb_orders_on_store_id")
+  @@index([userId], map: "index_ppb_orders_on_user_id")
+  @@index([utmCampaign], map: "index_ppb_orders_on_utm_campaign")
+  @@index([utmSource], map: "index_ppb_orders_on_utm_source")
+
+  @@map("ppb_orders")
 }
 
 model ppb_outfits {

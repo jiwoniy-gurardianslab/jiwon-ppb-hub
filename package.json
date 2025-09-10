@@ -6,6 +6,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "pnpm -r build",
+    "build:config": "pnpm --filter config build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

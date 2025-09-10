@@ -45,5 +45,6 @@ These objects have comments defined in the database, which is not yet fully supp
 
 ```
 
-### 권장사항
-1. Database 컬럼은 snake_case지만 어플리케이션에서 camelCase로 사용(schema에서 변환해줌)
+### 스키마 주의 사항
+1. Database 컬럼은 snake_case지만 어플리케이션에서 camelCase로 사용(schema에서 변환)
+2. 의미없는 접두사 제거(ppb_)

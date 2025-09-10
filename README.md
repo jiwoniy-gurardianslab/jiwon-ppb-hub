@@ -2,6 +2,12 @@
 
 ## Setup
 
+```
+pnpm install
+// typescript + jest 설정을 위해서
+pnpm run build:config
+```
+
 
 ### Init (처음부터 셋팅이 궁금하다면)
 [설치하기](https://pnpm.io/ko/installation)

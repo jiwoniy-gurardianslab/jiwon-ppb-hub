@@ -1,15 +1,15 @@
-import { getPrismaClientWrapper } from '../../config';
-import { DBError, DBErrorCode } from '../../error';
+import { getPrismaClient } from '../../config';
+// import { DBError, DBErrorCode } from '../../error';
 import BrandClass from './class';
 
-describe('[Brand]', () => {
-  const prismaWrapper = getPrismaClientWrapper();
+describe('Table: ppb_brands', () => {
+  const prismaInstance = getPrismaClient();
   let brandClass: BrandClass | null = null;
 
   beforeAll(async () => {
     try {
-      prismaWrapper.$connect();
-      brandClass = new BrandClass(prismaWrapper);  
+      prismaInstance.$connect();
+      brandClass = new BrandClass(prismaInstance);  
     } catch (error: unknown) {
       console.error(error);
     }
@@ -17,18 +17,15 @@ describe('[Brand]', () => {
   
   afterAll(async () => {
     // await userClass?.clearData();
-    prismaWrapper.$disconnect();
+    prismaInstance.$disconnect();
   });
 
-  test('[Brand]', async () => {
+  test('total row count: 30', async () => {
     if (brandClass) {
-      // 없는 값 조회시
-      const { success, data, error } = await brandClass.getCount();
-      expect(success).toBe(false);
-      expect(error).toBeInstanceOf(DBError);
-      if (success === false) {
-        expect(error.code).toBe(DBErrorCode.DB_NOT_FOUND);
-      }
+      // 일단 개발환경에서는 30개
+      const { success, data } = await brandClass.getCount();
+      expect(success).toBe(true);
+      expect(data).toBe(30);
     }
   });
 

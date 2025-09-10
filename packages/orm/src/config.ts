@@ -26,11 +26,27 @@ export function getDatabaseUrl({
   return `${database}://${username}:${password}@${host}:${port}/${databaseName}?schema=${schema}`;
 }
 
-export function getPrismaClientWrapper(): PrismaPpbClientWrapper {
-  const databaseInfo = getPpbSetupDataInfo();
-  const databaseUrl = getDatabaseUrl(databaseInfo);
-  // TODO 싱글톤 관리
-  const ormService = new PpbOrmInitService(databaseUrl, ['info']);
+export function getPrismaClient(): PrismaPpbClientWrapper {
+  const ormService = OrmServiceSingleton.getInstance();
   const prisma = ormService.getPrismaClient();
   return prisma;
+}
+
+export class OrmServiceSingleton {
+  private static instance: PpbOrmInitService | null = null;
+  
+  public static getInstance(): PpbOrmInitService {
+    if (!OrmServiceSingleton.instance) {
+      const databaseInfo = getPpbSetupDataInfo();
+      const databaseUrl = getDatabaseUrl(databaseInfo);
+      OrmServiceSingleton.instance = new PpbOrmInitService(databaseUrl, ['info']);
+    }
+    
+    return OrmServiceSingleton.instance;
+  }
+  
+  // 테스트나 재초기화가 필요한 경우를 위한 메서드
+  public static resetInstance(): void {
+    OrmServiceSingleton.instance = null;
+  }
 }

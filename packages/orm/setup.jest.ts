@@ -6,8 +6,11 @@ process.env.PPB_DATABASE_TYPE = 'postgresql';
 process.env.PPB_DATABASE_USERNAME = 'guardians';
 process.env.PPB_DATABASE_PASSWORD = '1q2w3e$R';
 // process.env.PPB_DATABASE_HOST = 'localhost';
-process.env.PPB_DATABASE_HOST = 'ppb-development.cohpkveydrp3.ap-northeast-2.rds.amazonaws.com';
+// process.env.PPB_DATABASE_HOST = 'ppb-development.cohpkveydrp3.ap-northeast-2.rds.amazonaws.com';
+process.env.PPB_DATABASE_HOST = 'ppb-production-v2-cluster.cluster-cpda7oqtfybw.ap-northeast-2.rds.amazonaws.com';
+
 
 process.env.PPB_DATABASE_PORT = '5432';
-process.env.PPB_DATABASE_NAME = 'ppb-development';
+// process.env.PPB_DATABASE_NAME = 'ppb-development';
+process.env.PPB_DATABASE_NAME = 'ppb-production';
 process.env.PPB_DATABASE_SCHEMA = 'public';

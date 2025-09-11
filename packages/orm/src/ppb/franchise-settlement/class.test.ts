@@ -38,26 +38,55 @@ describe('Purchase fee for settlements', () => {
     prismaInstance.$disconnect();
   });
 
-  test('이번달 정산', async () => {
+  test('바로드림, 구매예약 전체 금액', async () => {
+    // 전체금액 * 0.05
     if (franchiseSettlement) {
       const { fromDate, toDate } = getPreviousMonthRange();
-      console.log(`fromDate: ${fromDate}`);
-      console.log(`toDate: ${toDate}`);
-      const { success: totalSuccess, data: totalFee } = await franchiseSettlement.getPurchaseFeeForSettlement(12469, fromDate, toDate);
-      const { success: cancelSuccess, data: cancelFee } = await franchiseSettlement.getPurchaseCanceledForSettlement(12469, fromDate, toDate);
+      const { success: totalSuccess, data: totalFee } = await franchiseSettlement.getPurchaseFeeAmount(10351, fromDate, toDate);
 
       // 수수료는 0.05를 곱해야함
-      console.log(totalSuccess);
-      console.log(cancelSuccess);
-      console.log(totalFee);
-      console.log(cancelFee);
-      // if (totalSuccess) {
-      //   const value = totalFee.priceTotalKrw?.minus(totalFee.priceDiscountsKrw || 0);
-      //   const test = totalFee.priceTotalKrw?.minus(cancelFee || 0)
-      //   console.log(value);
-      //   // console.log(value?.mul(0.05))
-      //   console.log(test)
-      // }
+      if (totalSuccess) {
+        console.log(totalFee);
+        console.log(parseFloat(totalFee) * 0.05);
+      }
+    }
+  });
+
+  test('바로드림, 구매예약 취소 금액', async () => {
+    // 전체금액 * 0.05
+    if (franchiseSettlement) {
+      const { fromDate, toDate } = getPreviousMonthRange();
+      const { success: totalSuccess, data: totalFee } = await franchiseSettlement.getPurchaseFeeAmount(10351, fromDate, toDate, true);
+
+      // 수수료는 0.05를 곱해야함
+      if (totalSuccess) {
+        console.log(totalFee);
+        console.log(parseFloat(totalFee) * 0.05);
+      }
+    }
+  });
+
+  test('이번달 정산 지원 전체금액', async () => {
+    if (franchiseSettlement) {
+      const { fromDate, toDate } = getPreviousMonthRange();
+      const { success: totalSuccess, data: totalFee } = await franchiseSettlement.getPurchaseSupportAmount(10351, fromDate, toDate);
+
+      if (totalSuccess) {
+        console.log(totalFee);
+        console.log(parseFloat(totalFee) * 0.5);
+      }
+    }
+  });
+
+  test('이번달 정산 지원 전체', async () => {
+    if (franchiseSettlement) {
+      const { fromDate, toDate } = getPreviousMonthRange();
+      const { success: totalSuccess, data: totalFee } = await franchiseSettlement.getPurchaseSupportAmount(10351, fromDate, toDate, true);
+
+      if (totalSuccess) {
+        console.log(totalFee);
+        console.log(parseFloat(totalFee) * 0.5);
+      }
     }
   });
 

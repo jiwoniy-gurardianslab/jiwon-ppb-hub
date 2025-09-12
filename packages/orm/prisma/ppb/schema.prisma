@@ -8,40 +8,43 @@ datasource db {
   url      = env("DATABASE_PPB_URL")
 }
 
-model ai_analysis_target_images {
-  id            BigInt   @id @default(autoincrement())
-  user_id       Int?
-  image         String?  @db.VarChar
-  analysis_type String?  @db.VarChar
-  created_at    DateTime @db.Timestamp(6)
-  updated_at    DateTime @db.Timestamp(6)
-}
+// model ai_analysis_target_images {
+//   id            BigInt   @id @default(autoincrement())
+//   user_id       Int?
+//   image         String?  @db.VarChar
+//   analysis_type String?  @db.VarChar
+//   created_at    DateTime @db.Timestamp(6)
+//   updated_at    DateTime @db.Timestamp(6)
+// }
 
-model answer_sets {
-  id           BigInt   @id @default(autoincrement())
-  project_id   Int?
-  user_id      Int?
-  answers_json String?  @default("[]")
-  status       String?  @db.VarChar
-  created_at   DateTime @db.Timestamp(6)
-  updated_at   DateTime @db.Timestamp(6)
-  subject_id   Int?
-}
+// model answer_sets {
+//   id           BigInt   @id @default(autoincrement())
+//   project_id   Int?
+//   user_id      Int?
+//   answers_json String?  @default("[]")
+//   status       String?  @db.VarChar
+//   created_at   DateTime @db.Timestamp(6)
+//   updated_at   DateTime @db.Timestamp(6)
+//   subject_id   Int?
+// }
 
-model apps {
+model Apps {
   id         BigInt   @id @default(autoincrement())
-  app_key    String?  @unique(map: "index_apps_on_app_key") @db.VarChar
-  user_id    Int?
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
+  appKey     String?  @map("app_key") @unique(map: "index_apps_on_app_key") @db.VarChar
+  userId     Int?     @map("user_id") // 관계 표현할 필요 없음(안쓰임)
+
+  createdAt      DateTime  @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime  @map("updated_at") @db.Timestamp(6)
+
+  @@map("apps")
 }
 
-model ar_internal_metadata {
-  key        String   @id @db.VarChar
-  value      String?  @db.VarChar
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-}
+// model ar_internal_metadata {
+//   key        String   @id @db.VarChar
+//   value      String?  @db.VarChar
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+// }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 // model awsdms_apply_exceptions {
@@ -158,53 +161,33 @@ model ar_internal_metadata {
 //   @@index([type_code], map: "index_bookings_on_type_code")
 // }
 
-model cafe24_dashboards {
-  id                   BigInt    @id @default(autoincrement())
-  channel_id           Int?
-  cafe24_raw_record_id Int?
-  mall_id              String?   @db.VarChar
-  shop_no              String?   @db.VarChar
-  date                 DateTime? @db.Date
-  created_at           DateTime  @db.Timestamp(6)
-  updated_at           DateTime  @db.Timestamp(6)
+// model cafe24_dashboards {
+//   id                   BigInt    @id @default(autoincrement())
+//   channel_id           Int?
+//   cafe24_raw_record_id Int?
+//   mall_id              String?   @db.VarChar
+//   shop_no              String?   @db.VarChar
+//   date                 DateTime? @db.Date
+//   created_at           DateTime  @db.Timestamp(6)
+//   updated_at           DateTime  @db.Timestamp(6)
 
-  @@index([date], map: "index_cafe24_dashboards_on_date")
-  @@index([mall_id], map: "index_cafe24_dashboards_on_mall_id")
-}
+//   @@index([date], map: "index_cafe24_dashboards_on_date")
+//   @@index([mall_id], map: "index_cafe24_dashboards_on_mall_id")
+// }
 
-model cafe24_raw_records {
-  id         BigInt   @id @default(autoincrement())
-  channel_id Int?
-  mall_id    String?  @db.VarChar
-  shop_no    String?  @db.VarChar
-  url        String?  @db.VarChar
-  json_data  Json?    @db.Json
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
+// model cafe24_raw_records {
+//   id         BigInt   @id @default(autoincrement())
+//   channel_id Int?
+//   mall_id    String?  @db.VarChar
+//   shop_no    String?  @db.VarChar
+//   url        String?  @db.VarChar
+//   json_data  Json?    @db.Json
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
 
-  @@index([mall_id], map: "index_cafe24_raw_records_on_mall_id")
-  @@index([mall_id, shop_no], map: "index_cafe24_raw_records_on_mall_id_and_shop_no")
-}
-
-model cards {
-  id            BigInt   @id @default(autoincrement())
-  user_id       Int?
-  last_4_digits String?  @db.VarChar
-  expiry        String?  @db.VarChar
-  card_name     String?  @db.VarChar
-  nick_name     String?  @db.VarChar
-  is_primary    Boolean?
-  customer_uid  String?  @db.VarChar
-  status        String?  @db.VarChar
-  result_data   String?
-  created_at    DateTime @db.Timestamp(6)
-  updated_at    DateTime @db.Timestamp(6)
-  transactions  Json?    @default("[]") @db.Json
-  pg_kind       String?  @db.VarChar
-  migration_key String?  @db.VarChar
-
-  @@index([status], map: "index_cards_on_status")
-}
+//   @@index([mall_id], map: "index_cafe24_raw_records_on_mall_id")
+//   @@index([mall_id, shop_no], map: "index_cafe24_raw_records_on_mall_id_and_shop_no")
+// }
 
 model channel_users {
   id         BigInt   @id @default(autoincrement())
@@ -475,50 +458,52 @@ model fxrates {
   updated_at DateTime  @db.Timestamp(6)
 }
 
-model govisibly_events {
-  id                   BigInt    @id @default(autoincrement())
-  user_id              Int?
-  govisibly_session_id Int?
-  event_type           String?   @db.VarChar
-  status               String?   @db.VarChar
-  event_created_at     DateTime? @db.Timestamp(6)
-  created_at           DateTime  @db.Timestamp(6)
-  updated_at           DateTime  @db.Timestamp(6)
-  raw_record           Json?     @db.Json
+// 안쓰임(미국 사업용)
+// model govisibly_events {
+//   id                   BigInt    @id @default(autoincrement())
+//   user_id              Int?
+//   govisibly_session_id Int?
+//   event_type           String?   @db.VarChar
+//   status               String?   @db.VarChar
+//   event_created_at     DateTime? @db.Timestamp(6)
+//   created_at           DateTime  @db.Timestamp(6)
+//   updated_at           DateTime  @db.Timestamp(6)
+//   raw_record           Json?     @db.Json
 
-  @@index([event_type], map: "index_govisibly_events_on_event_type")
-  @@index([govisibly_session_id], map: "index_govisibly_events_on_govisibly_session_id")
-  @@index([status], map: "index_govisibly_events_on_status")
-  @@index([user_id], map: "index_govisibly_events_on_user_id")
-}
+//   @@index([event_type], map: "index_govisibly_events_on_event_type")
+//   @@index([govisibly_session_id], map: "index_govisibly_events_on_govisibly_session_id")
+//   @@index([status], map: "index_govisibly_events_on_status")
+//   @@index([user_id], map: "index_govisibly_events_on_user_id")
+// }
 
-model govisibly_sessions {
-  id                BigInt    @id @default(autoincrement())
-  user_id           Int?
-  status            String?   @db.VarChar
-  raw_record        Json?     @db.Json
-  booking_id        Int?
-  session_key       String?   @unique(map: "index_govisibly_sessions_on_session_key") @db.VarChar
-  l_lens_sph        String?   @db.VarChar
-  r_lens_sph        String?   @db.VarChar
-  first_name        String?   @db.VarChar
-  last_name         String?   @db.VarChar
-  date_of_birth     DateTime? @db.Date
-  region            String?   @db.VarChar
-  is_exam_completed Boolean?  @default(false)
+// 안쓰임(미국 사업용)
+// model govisibly_sessions {
+//   id                BigInt    @id @default(autoincrement())
+//   user_id           Int?
+//   status            String?   @db.VarChar
+//   raw_record        Json?     @db.Json
+//   booking_id        Int?
+//   session_key       String?   @unique(map: "index_govisibly_sessions_on_session_key") @db.VarChar
+//   l_lens_sph        String?   @db.VarChar
+//   r_lens_sph        String?   @db.VarChar
+//   first_name        String?   @db.VarChar
+//   last_name         String?   @db.VarChar
+//   date_of_birth     DateTime? @db.Date
+//   region            String?   @db.VarChar
+//   is_exam_completed Boolean?  @default(false)
 
-  @@index([booking_id], map: "index_govisibly_sessions_on_booking_id")
-  @@index([status], map: "index_govisibly_sessions_on_status")
-  @@index([user_id], map: "index_govisibly_sessions_on_user_id")
-}
+//   @@index([booking_id], map: "index_govisibly_sessions_on_booking_id")
+//   @@index([status], map: "index_govisibly_sessions_on_status")
+//   @@index([user_id], map: "index_govisibly_sessions_on_user_id")
+// }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model issue_hapakr_coupons {
-  phone   String? @db.VarChar(255)
-  user_id BigInt?
+// model issue_hapakr_coupons {
+//   phone   String? @db.VarChar(255)
+//   user_id BigInt?
 
-  @@ignore
-}
+//   @@ignore
+// }
 
 model kcpbatch {
   sname          String? @db.VarChar(50)
@@ -572,7 +557,6 @@ model Manages {
 
   @@map("manages")
 }
-
 
 model membership_histories {
   id               BigInt   @id @default(autoincrement())
@@ -665,20 +649,22 @@ model nbteyes {
   @@index([app_key], map: "index_nbteyes_on_app_key")
 }
 
-model okpos_logs {
+model OkposLogs {
   id                BigInt   @id @default(autoincrement())
-  order_no          String?  @db.VarChar
+  order_no          String?  @map("transaction_type") @db.VarChar
   raw               Json?    @db.Json
-  log_type          String?  @db.VarChar
-  processing_status String?  @db.VarChar
-  ppb_order_id      Int?
-  created_at        DateTime @db.Timestamp(6)
-  updated_at        DateTime @db.Timestamp(6)
-  response_body     Json?    @db.Json
+  logType           String?  @map("log_type") @db.VarChar
+  processingStatus  String?  @map("processing_status") @db.VarChar
+  orderId           Int?     @map("ppb_order_id")
+  createdAt         DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt         DateTime @map("updated_at") @db.Timestamp(6)
+  responseBody      Json?    @map("response_body") @db.Json
 
-  @@index([log_type], map: "index_okpos_logs_on_log_type")
-  @@index([ppb_order_id], map: "index_okpos_logs_on_ppb_order_id")
-  @@index([processing_status], map: "index_okpos_logs_on_processing_status")
+  @@index([logType], map: "index_okpos_logs_on_log_type")
+  @@index([orderId], map: "index_okpos_logs_on_ppb_order_id")
+  @@index([processingStatus], map: "index_okpos_logs_on_processing_status")
+
+  @@map("okpos_logs")
 }
 
 // 안쓰임
@@ -714,138 +700,173 @@ model okpos_logs {
 //   @@index([status], map: "index_orders_on_status")
 // }
 
-model patient_intake_forms {
-  id                  BigInt  @id @default(autoincrement())
-  patient_id          Int?
-  ppb_prescription_id Int?
-  booking_id          Int?
-  form_data           Json?   @default("{}") @db.Json
-  status              String? @default("pending") @db.VarChar
-  uuid                String? @unique(map: "index_patient_intake_forms_on_uuid") @db.VarChar
+// (안쓰임)미국사업에서 만든 것
+// model patients {
+//   id                 BigInt    @id @default(autoincrement())
+//   first_name         String?   @db.VarChar
+//   last_name          String?   @db.VarChar
+//   sex                String?   @db.VarChar
+//   gender             String?   @db.VarChar
+//   dob_date           DateTime? @db.Date
+//   occupation         String?   @db.VarChar
+//   preferred_language String?   @db.VarChar
+//   ssn                String?   @db.VarChar
+//   email              String?   @db.VarChar
+//   phone              String?   @db.VarChar
+//   address1           String?   @db.VarChar
+//   address2           String?   @db.VarChar
+//   zipcode            String?   @db.VarChar
+//   city               String?   @db.VarChar
+//   state              String?   @db.VarChar
+//   user_id            Int?
+//   created_at         DateTime  @db.Timestamp(6)
+//   updated_at         DateTime  @db.Timestamp(6)
 
-  @@index([booking_id], map: "index_patient_intake_forms_on_booking_id")
-  @@index([patient_id], map: "index_patient_intake_forms_on_patient_id")
-  @@index([ppb_prescription_id], map: "index_patient_intake_forms_on_ppb_prescription_id")
-  @@index([status], map: "index_patient_intake_forms_on_status")
+//   @@index([user_id], map: "index_patients_on_user_id")
+// }
+
+// model patient_intake_forms {
+//   id                  BigInt  @id @default(autoincrement())
+//   patient_id          Int?
+//   ppb_prescription_id Int?
+//   booking_id          Int?
+//   form_data           Json?   @default("{}") @db.Json
+//   status              String? @default("pending") @db.VarChar
+//   uuid                String? @unique(map: "index_patient_intake_forms_on_uuid") @db.VarChar
+
+//   @@index([booking_id], map: "index_patient_intake_forms_on_booking_id")
+//   @@index([patient_id], map: "index_patient_intake_forms_on_patient_id")
+//   @@index([ppb_prescription_id], map: "index_patient_intake_forms_on_ppb_prescription_id")
+//   @@index([status], map: "index_patient_intake_forms_on_status")
+// }
+
+model Cards {
+  id            BigInt   @id @default(autoincrement())
+
+  userId        BigInt?  @map("user_id")
+  last4Digits   String?  @map("last_4_digits") @db.VarChar
+  expiry        String?  @db.VarChar
+  cardName      String?  @map("card_name") @db.VarChar
+  nickName      String?  @map("nick_name") @db.VarChar
+  isPrimary     Boolean? @map("is_primary")
+  customerUid   String?  @map("customer_uid") @db.VarChar
+  status        String?  @db.VarChar
+  resultData    String?  @map("result_data")
+  createdAt     DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime @map("updated_at") @db.Timestamp(6)
+  transactions  Json?    @default("[]") @db.Json
+  pgKind        String?  @map("pg_kind") @db.VarChar
+  migrationKey  String?  @map("migration_key") @db.VarChar
+
+  @@index([status], map: "index_cards_on_status")
+
+  user          Users?   @relation(fields: [userId], references: [id])
+  payments      Payments[]
+
+  @@map("cards")
 }
 
-model patients {
-  id                 BigInt    @id @default(autoincrement())
-  first_name         String?   @db.VarChar
-  last_name          String?   @db.VarChar
-  sex                String?   @db.VarChar
-  gender             String?   @db.VarChar
-  dob_date           DateTime? @db.Date
-  occupation         String?   @db.VarChar
-  preferred_language String?   @db.VarChar
-  ssn                String?   @db.VarChar
-  email              String?   @db.VarChar
-  phone              String?   @db.VarChar
-  address1           String?   @db.VarChar
-  address2           String?   @db.VarChar
-  zipcode            String?   @db.VarChar
-  city               String?   @db.VarChar
-  state              String?   @db.VarChar
-  user_id            Int?
-  created_at         DateTime  @db.Timestamp(6)
-  updated_at         DateTime  @db.Timestamp(6)
-
-  @@index([user_id], map: "index_patients_on_user_id")
-}
-
-model payments {
+model Payments {
   id                      BigInt    @id @default(autoincrement())
-  user_id                 Int?
-  order_id                Int?
-  card_id                 Int?
+  userId                  BigInt?   @map("user_id")
+  // 주의 이거는 안쓰임
+  unusedOrderId           BigInt?   @map("order_id")
+  orderId                 BigInt?   @map("ppb_order_id")
+  cardId                  BigInt?   @map("card_id")
   tid                     String?   @unique(map: "index_payments_on_tid") @db.VarChar
-  payment_method          String?   @db.VarChar
+  paymentMethod           String?   @map("payment_method") @db.VarChar
   amount                  Decimal?  @db.Decimal
   currency                String?   @db.VarChar
   quota                   Int?
   status                  String?   @db.VarChar
-  result_data             String?
-  fail_reason             String?   @db.VarChar
-  created_at              DateTime  @db.Timestamp(6)
-  updated_at              DateTime  @db.Timestamp(6)
-  total_refund            Decimal?  @default(0.0) @db.Decimal
-  refund_transactions     String?
-  last_refund_fail_reason String?   @db.VarChar
-  last_refunded_by        Int?
-  last_refunded_at        DateTime? @db.Timestamp(6)
-  shopify_order_id        Int?
-  ppb_order_id            Int?
-  transactions_success    Json?     @default("[]") @db.Json
-  transactions_failed     Json?     @default("[]") @db.Json
-  transactions_refund     Json?     @default("[]") @db.Json
+  resultData              String?   @map("result_data")
+  failReason              String?   @db.VarChar
+  createdAt               DateTime  @map("created_at") @db.Timestamp(6)
+  updatedAt               DateTime  @map("updated_at") @db.Timestamp(6)
+  totalRefund             Decimal?  @map("total_refund") @default(0.0) @db.Decimal
+  refundTransactions      String?   @map("refund_transactions")
+  lastRefundFailReason    String?   @map("last_refund_fail_reason") @db.VarChar
+  lastRefundedBy          Int?      @map("last_refunded_by")
+  lastRefundedAt          DateTime? @map("last_refunded_at") @db.Timestamp(6)
+  shopifyOrderId          Int?      @map("shopify_order_id")
+  
+  transactions_success    Json?     @map("transactions_success") @default("[]") @db.Json
+  transactions_failed     Json?     @map("transactions_failed") @default("[]") @db.Json
+  transactions_refund     Json?     @map("transactions_refund") @default("[]") @db.Json
 
-  @@index([ppb_order_id], map: "index_payments_on_ppb_order_id")
+  @@index([orderId], map: "index_payments_on_ppb_order_id")
   @@index([status], map: "index_payments_on_status")
+
+  user                   Users?   @relation(fields: [userId], references: [id])
+  order                  Orders?   @relation(fields: [orderId], references: [id])
+  card                   Cards?   @relation(fields: [cardId], references: [id])
+  
+  @@map("payments")
 }
 
-model ppb_admin_comments {
-  id                     BigInt   @id @default(autoincrement())
-  comment                String?
-  created_by             Int?
-  admin_commentable_type String?  @db.VarChar
-  admin_commentable_id   BigInt?
-  created_at             DateTime @db.Timestamp(6)
-  updated_at             DateTime @db.Timestamp(6)
+// model ppb_admin_comments {
+//   id                     BigInt   @id @default(autoincrement())
+//   comment                String?
+//   created_by             Int?
+//   admin_commentable_type String?  @db.VarChar
+//   admin_commentable_id   BigInt?
+//   created_at             DateTime @db.Timestamp(6)
+//   updated_at             DateTime @db.Timestamp(6)
 
-  @@index([admin_commentable_type, admin_commentable_id], map: "index_ppb_admin_comments_on_admin_commentable_type_and_id")
-}
+//   @@index([admin_commentable_type, admin_commentable_id], map: "index_ppb_admin_comments_on_admin_commentable_type_and_id")
+// }
 
-model ppb_archive_refunds {
-  id                       BigInt    @id @default(autoincrement())
-  file                     String?
-  status_refund            String?   @default("pending") @db.VarChar
-  status_stock             String?   @default("pending") @db.VarChar
-  status_refund_updated_at String?   @db.VarChar
-  status_stock_updated_at  String?   @db.VarChar
-  raw                      Json?     @default("[]") @db.Json
-  logs                     Json?     @default("{}") @db.Json
-  deleted_at               DateTime? @db.Timestamp(6)
-  created_by               String?   @db.VarChar
-  refunded_by              String?   @db.VarChar
-  deleted_by               String?   @db.VarChar
-  created_at               DateTime  @db.Timestamp(6)
-  updated_at               DateTime  @db.Timestamp(6)
+// model ppb_archive_refunds {
+//   id                       BigInt    @id @default(autoincrement())
+//   file                     String?
+//   status_refund            String?   @default("pending") @db.VarChar
+//   status_stock             String?   @default("pending") @db.VarChar
+//   status_refund_updated_at String?   @db.VarChar
+//   status_stock_updated_at  String?   @db.VarChar
+//   raw                      Json?     @default("[]") @db.Json
+//   logs                     Json?     @default("{}") @db.Json
+//   deleted_at               DateTime? @db.Timestamp(6)
+//   created_by               String?   @db.VarChar
+//   refunded_by              String?   @db.VarChar
+//   deleted_by               String?   @db.VarChar
+//   created_at               DateTime  @db.Timestamp(6)
+//   updated_at               DateTime  @db.Timestamp(6)
 
-  @@index([status_refund], map: "index_ppb_archive_refunds_on_status_refund")
-}
+//   @@index([status_refund], map: "index_ppb_archive_refunds_on_status_refund")
+// }
 
-model ppb_archive_returns {
-  id                    BigInt    @id @default(autoincrement())
-  files                 Json?     @db.Json
-  year                  Int?
-  cweek                 Int?
-  raw_array             Json      @default("[]") @db.Json
-  exclude_order_names   Json      @default("[]") @db.Json
-  init_full_order_names Json      @default("[]") @db.Json
-  init_params_normal    Json      @default("[]") @db.Json
-  init_params_watch     Json      @default("[]") @db.Json
-  init_params_error     Json      @default("[]") @db.Json
-  created_at            DateTime  @db.Timestamp(6)
-  updated_at            DateTime  @db.Timestamp(6)
-  deleted_at            DateTime? @db.Timestamp(6)
-  status                String?   @db.VarChar
+// model ppb_archive_returns {
+//   id                    BigInt    @id @default(autoincrement())
+//   files                 Json?     @db.Json
+//   year                  Int?
+//   cweek                 Int?
+//   raw_array             Json      @default("[]") @db.Json
+//   exclude_order_names   Json      @default("[]") @db.Json
+//   init_full_order_names Json      @default("[]") @db.Json
+//   init_params_normal    Json      @default("[]") @db.Json
+//   init_params_watch     Json      @default("[]") @db.Json
+//   init_params_error     Json      @default("[]") @db.Json
+//   created_at            DateTime  @db.Timestamp(6)
+//   updated_at            DateTime  @db.Timestamp(6)
+//   deleted_at            DateTime? @db.Timestamp(6)
+//   status                String?   @db.VarChar
 
-  @@index([status], map: "index_ppb_archive_returns_on_status")
-}
+//   @@index([status], map: "index_ppb_archive_returns_on_status")
+// }
 
-model ppb_archive_settlements {
-  id              BigInt   @id @default(autoincrement())
-  year            Int?
-  month           Int?
-  day             Int?
-  zone            String?  @db.VarChar
-  settlement_type String?  @db.VarChar
-  data            Json?    @db.Json
-  created_at      DateTime @db.Timestamp(6)
-  updated_at      DateTime @db.Timestamp(6)
+// model ppb_archive_settlements {
+//   id              BigInt   @id @default(autoincrement())
+//   year            Int?
+//   month           Int?
+//   day             Int?
+//   zone            String?  @db.VarChar
+//   settlement_type String?  @db.VarChar
+//   data            Json?    @db.Json
+//   created_at      DateTime @db.Timestamp(6)
+//   updated_at      DateTime @db.Timestamp(6)
 
-  @@index([settlement_type], map: "index_ppb_archive_settlements_on_settlement_type")
-}
+//   @@index([settlement_type], map: "index_ppb_archive_settlements_on_settlement_type")
+// }
 
 model Brands {
   id                    BigInt    @id @default(autoincrement())
@@ -868,6 +889,7 @@ model Brands {
   @@index([isWinc], map: "index_ppb_brands_on_is_winc")
 
   products           Products[]
+  collections        Collections[]
   coupons            Coupons[]
   couponStamps       CouponStamps[]
   orderItems         OrderItems[]
@@ -959,40 +981,52 @@ model ppb_collection_relations {
   @@index([parent_id], map: "index_ppb_collection_relations_on_parent_id")
 }
 
-model ppb_collections {
+model Collections {
   id           BigInt   @id @default(autoincrement())
   title        String?  @db.VarChar
   handle       String?  @db.VarChar
-  body_html    String?
-  created_at   DateTime @db.Timestamp(6)
-  updated_at   DateTime @db.Timestamp(6)
-  ppb_brand_id Int?
+  bodyHtml     String?  @map("body_html")
+  createdAt    DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime @map("updated_at") @db.Timestamp(6)
+  brandId      BigInt?  @map("ppb_brand_id")
   tags         Json?    @default("[]") @db.Json
-  store_id     String?  @db.VarChar
-  sub_text     String?
-  persona_text String?
-  color_chips  Json?    @default("[]") @db.Json
+  storeId      String?  @map("store_id") @db.VarChar
+  subText      String?  @map("sub_text")
+  personaText  String?  @map("persona_text")
+  colorChips   Json?    @map("color_chips") @default("[]") @db.Json
   status       String?  @default("active") @db.VarChar
 
-  @@unique([store_id, handle], map: "index_ppb_collections_on_store_id_and_handle")
+  @@unique([storeId, handle], map: "index_ppb_collections_on_store_id_and_handle")
   @@index([handle], map: "index_ppb_collections_on_handle")
-  @@index([ppb_brand_id], map: "index_ppb_collections_on_ppb_brand_id")
+  @@index([brandId], map: "index_ppb_collections_on_ppb_brand_id")
   @@index([status], map: "index_ppb_collections_on_status")
-  @@index([store_id], map: "index_ppb_collections_on_store_id")
-  @@index([updated_at], map: "index_ppb_collections_on_updated_at")
+  @@index([storeId], map: "index_ppb_collections_on_store_id")
+  @@index([updatedAt], map: "index_ppb_collections_on_updated_at")
+
+  brand       Brands? @relation(fields: [brandId], references: [id])
+  collects    Collects[]
+
+  @@map("ppb_collections")
 }
 
-model ppb_collects {
+model Collects {
   id            BigInt   @id @default(autoincrement())
-  product_id    Int?
-  collection_id Int?
-  position      Int?
-  sort_value    String?  @db.VarChar
-  created_at    DateTime @db.Timestamp(6)
-  updated_at    DateTime @db.Timestamp(6)
 
-  @@unique([collection_id, product_id], map: "index_ppb_collects_on_collection_id_and_product_id")
-  @@index([collection_id], map: "index_ppb_collects_on_collection_id")
+  productId     BigInt?  @map("product_id")
+  collectionId  BigInt?  @map("collection_id")
+  
+  position      Int?     @map("position")
+  sortValue     String?  @map("sort_value") @db.VarChar
+  createdAt     DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime @map("updated_at") @db.Timestamp(6)
+
+  @@unique([collectionId, productId], map: "index_ppb_collects_on_collection_id_and_product_id")
+  @@index([collectionId], map: "index_ppb_collects_on_collection_id")
+
+  product       Products? @relation(fields: [productId], references: [id])
+  collection    Collections? @relation(fields: [collectionId], references: [id])
+
+  @@map("ppb_collects")
 }
 
 model Coupons {
@@ -1026,7 +1060,7 @@ model Coupons {
   @@index([storeId], map: "index_ppb_coupons_on_store_id")
   @@index([userId], map: "index_ppb_coupons_on_user_id")
 
-  user           Users   @relation(fields: [userId], references: [id])
+  user          Users   @relation(fields: [userId], references: [id])
   order         Orders? @relation(fields: [orderId], references: [id])
   product       Products? @relation(fields: [productId], references: [id])
   brand         Brands? @relation(fields: [brandId], references: [id])
@@ -1569,51 +1603,51 @@ model Images {
 //   @@index([user_id], map: "index_ppb_influencers_on_user_id")
 // }
 
-model ppb_inquiries {
-  id                    BigInt    @id @default(autoincrement())
-  user_id               Int?
-  ppb_product_id        Int?
-  ppb_order_id          Int?
-  ppb_franchise_id      Int?
-  inquiry_type          String?   @db.VarChar
-  inquiry_comment       String?
-  inquiry_images        Json?     @db.Json
-  inquiry_videos        Json?     @db.Json
-  answer_comment        String?
-  answered_created_at   DateTime? @db.Timestamp(6)
-  answered_by           String?   @db.VarChar
-  is_secret             Boolean?
-  alimtalk_sent_at      DateTime? @db.Timestamp(6)
-  created_at            DateTime  @db.Timestamp(6)
-  updated_at            DateTime  @db.Timestamp(6)
-  status                String?   @default("new") @db.VarChar(32)
-  app_key               String?   @db.VarChar
-  answered_updated_at   DateTime? @db.Timestamp(6)
-  notification_accepted Boolean?  @default(false)
-  push_sent_at          DateTime? @db.Timestamp(6)
-  deleted_at            DateTime? @db.Timestamp(6)
+// model ppb_inquiries {
+//   id                    BigInt    @id @default(autoincrement())
+//   user_id               Int?
+//   ppb_product_id        Int?
+//   ppb_order_id          Int?
+//   ppb_franchise_id      Int?
+//   inquiry_type          String?   @db.VarChar
+//   inquiry_comment       String?
+//   inquiry_images        Json?     @db.Json
+//   inquiry_videos        Json?     @db.Json
+//   answer_comment        String?
+//   answered_created_at   DateTime? @db.Timestamp(6)
+//   answered_by           String?   @db.VarChar
+//   is_secret             Boolean?
+//   alimtalk_sent_at      DateTime? @db.Timestamp(6)
+//   created_at            DateTime  @db.Timestamp(6)
+//   updated_at            DateTime  @db.Timestamp(6)
+//   status                String?   @default("new") @db.VarChar(32)
+//   app_key               String?   @db.VarChar
+//   answered_updated_at   DateTime? @db.Timestamp(6)
+//   notification_accepted Boolean?  @default(false)
+//   push_sent_at          DateTime? @db.Timestamp(6)
+//   deleted_at            DateTime? @db.Timestamp(6)
 
-  @@index([app_key], map: "index_ppb_inquiries_on_app_key")
-  @@index([inquiry_type], map: "index_ppb_inquiries_on_inquiry_type")
-  @@index([ppb_franchise_id], map: "index_ppb_inquiries_on_ppb_franchise_id")
-  @@index([ppb_order_id], map: "index_ppb_inquiries_on_ppb_order_id")
-  @@index([ppb_product_id], map: "index_ppb_inquiries_on_ppb_product_id")
-  @@index([status], map: "index_ppb_inquiries_on_status")
-  @@index([user_id], map: "index_ppb_inquiries_on_user_id")
-}
+//   @@index([app_key], map: "index_ppb_inquiries_on_app_key")
+//   @@index([inquiry_type], map: "index_ppb_inquiries_on_inquiry_type")
+//   @@index([ppb_franchise_id], map: "index_ppb_inquiries_on_ppb_franchise_id")
+//   @@index([ppb_order_id], map: "index_ppb_inquiries_on_ppb_order_id")
+//   @@index([ppb_product_id], map: "index_ppb_inquiries_on_ppb_product_id")
+//   @@index([status], map: "index_ppb_inquiries_on_status")
+//   @@index([user_id], map: "index_ppb_inquiries_on_user_id")
+// }
 
-model ppb_marketing_event_components {
-  id                 BigInt   @id @default(autoincrement())
-  marketing_event_id BigInt?
-  component_type     String?  @db.VarChar
-  component_id       BigInt?
-  created_at         DateTime @db.Timestamp(6)
-  updated_at         DateTime @db.Timestamp(6)
-  position           Int?     @default(0)
-  expose_count       Int?
+// model ppb_marketing_event_components {
+//   id                 BigInt   @id @default(autoincrement())
+//   marketing_event_id BigInt?
+//   component_type     String?  @db.VarChar
+//   component_id       BigInt?
+//   created_at         DateTime @db.Timestamp(6)
+//   updated_at         DateTime @db.Timestamp(6)
+//   position           Int?     @default(0)
+//   expose_count       Int?
 
-  @@index([marketing_event_id], map: "index_ppb_marketing_event_components_on_marketing_event_id")
-}
+//   @@index([marketing_event_id], map: "index_ppb_marketing_event_components_on_marketing_event_id")
+// }
 
 // model ppb_marketing_events {
 //   id             BigInt    @id @default(autoincrement())
@@ -1849,6 +1883,7 @@ model Orders {
   orderItems              OrderItems[]
   orderSubItems           OrderSubItems[]
   coupons                 Coupons[]
+  payments                Payments[]
 
   @@map("ppb_orders")
 }
@@ -2160,6 +2195,8 @@ model Products {
   brand                       Brands? @relation(fields: [brandId], references: [id])
   bundlePackageItems          ProductBundlePackageItems[]
 
+  priceGroup                  PriceGroupProducts?
+  collects                    Collects[]
   coupons                     Coupons[]
   orderItems                  OrderItems[]
   orderSubItems               OrderSubItems[]
@@ -2574,47 +2611,47 @@ model ProductBundlePackageImages {
 //   @@index([keyword], map: "index_ppb_searches_on_keyword")
 // }
 
-model ppb_shipping_invoice_file_download_histories {
-  id                           BigInt   @id @default(autoincrement())
-  user_id                      BigInt
-  ppb_shipping_invoice_file_id BigInt
-  created_at                   DateTime @db.Timestamp(6)
-  updated_at                   DateTime @db.Timestamp(6)
+// model ppb_shipping_invoice_file_download_histories {
+//   id                           BigInt   @id @default(autoincrement())
+//   user_id                      BigInt
+//   ppb_shipping_invoice_file_id BigInt
+//   created_at                   DateTime @db.Timestamp(6)
+//   updated_at                   DateTime @db.Timestamp(6)
 
-  @@index([ppb_shipping_invoice_file_id], map: "index_ppb_shipping_invoice_file_download_histories_on_file_id")
-  @@index([user_id], map: "index_ppb_shipping_invoice_file_download_histories_on_user_id")
-}
+//   @@index([ppb_shipping_invoice_file_id], map: "index_ppb_shipping_invoice_file_download_histories_on_file_id")
+//   @@index([user_id], map: "index_ppb_shipping_invoice_file_download_histories_on_user_id")
+// }
 
-model ppb_shipping_invoice_files {
-  id         BigInt   @id @default(autoincrement())
-  file_name  String?  @db.VarChar
-  file       String?
-  app_key    String   @db.VarChar
-  year       Int
-  month      Int
-  day        Int
-  status     String   @db.VarChar
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-  sc_file    String?
+// model ppb_shipping_invoice_files {
+//   id         BigInt   @id @default(autoincrement())
+//   file_name  String?  @db.VarChar
+//   file       String?
+//   app_key    String   @db.VarChar
+//   year       Int
+//   month      Int
+//   day        Int
+//   status     String   @db.VarChar
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+//   sc_file    String?
 
-  @@index([file_name], map: "index_ppb_shipping_invoice_files_on_file_name")
-  @@index([status], map: "index_ppb_shipping_invoice_files_on_status")
-}
+//   @@index([file_name], map: "index_ppb_shipping_invoice_files_on_file_name")
+//   @@index([status], map: "index_ppb_shipping_invoice_files_on_status")
+// }
 
-model ppb_stamp_deeplinks {
-  id              BigInt   @id @default(autoincrement())
-  coupon_stamp_id Int?
-  deeplink_id     Int?
-  created_at      DateTime @db.Timestamp(6)
-  updated_at      DateTime @db.Timestamp(6)
+// model ppb_stamp_deeplinks {
+//   id              BigInt   @id @default(autoincrement())
+//   coupon_stamp_id Int?
+//   deeplink_id     Int?
+//   created_at      DateTime @db.Timestamp(6)
+//   updated_at      DateTime @db.Timestamp(6)
 
-  @@index([coupon_stamp_id, deeplink_id], map: "index_ppb_stamp_deeplinks_on_coupon_stamp_id_and_deeplink_id")
-  @@index([deeplink_id], map: "index_ppb_stamp_deeplinks_on_deeplink_id")
-}
+//   @@index([coupon_stamp_id, deeplink_id], map: "index_ppb_stamp_deeplinks_on_coupon_stamp_id_and_deeplink_id")
+//   @@index([deeplink_id], map: "index_ppb_stamp_deeplinks_on_deeplink_id")
+// }
 
 // Stock
-model ppb_stocks {
+model Stocks {
   id                BigInt    @id @default(autoincrement())
   sku               String?   @db.VarChar
   available         Int       @default(0)
@@ -2632,58 +2669,65 @@ model ppb_stocks {
   @@index([franchise_id], map: "index_ppb_stocks_on_franchise_id")
   @@index([out_of_stock], map: "index_ppb_stocks_on_out_of_stock")
   @@index([sku], map: "index_ppb_stocks_on_sku")
+
+  histories         StockHistories[]
+
+  @@map("ppb_stocks")
 }
 
-
-model ppb_stock_histories {
+model StockHistories {
   id                     BigInt   @id @default(autoincrement())
-  stock_id               Int?
-  transaction_type       String?  @db.VarChar
-  transaction_quantity   Decimal? @db.Decimal
-  stock_historiable_type String?  @db.VarChar
-  stock_historiable_id   BigInt?
-  created_at             DateTime @db.Timestamp(6)
-  updated_at             DateTime @db.Timestamp(6)
+  stockId                BigInt   @map("stock_id")
+  transactionType        String?  @map("transaction_type") @db.VarChar
+  transactionQuantity    Decimal? @map("transaction_quantity") @db.Decimal
+  stockHistoriableType   String?  @map("stock_historiable_type") @db.VarChar
+  stockHistoriableId     BigInt?  @map("stock_historiable_id")
+  createdAt              DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt              DateTime @map("updated_at") @db.Timestamp(6)
   available              Int?
 
-  @@index([stock_id], map: "index_ppb_stock_histories_on_stock_id")
-  @@index([stock_historiable_type, stock_historiable_id], map: "index_stock_histories_on_historiable_type_and_id")
+  @@index([stockId], map: "index_ppb_stock_histories_on_stock_id")
+  @@index([stockHistoriableType, stockHistoriableId], map: "index_stock_histories_on_historiable_type_and_id")
+
+  stock   Stocks @relation(fields: [stockId], references: [id])
+
+  @@map("ppb_stock_histories")
 }
 
-model ppb_stock_notification_segments {
-  id                    BigInt   @id @default(autoincrement())
-  segment_id            Int?
-  stock_notification_id Int?
-  sent                  Boolean? @default(false)
-  created_at            DateTime @db.Timestamp(6)
-  updated_at            DateTime @db.Timestamp(6)
+// model ppb_stock_notification_segments {
+//   id                    BigInt   @id @default(autoincrement())
+//   segment_id            Int?
+//   stock_notification_id Int?
+//   sent                  Boolean? @default(false)
+//   created_at            DateTime @db.Timestamp(6)
+//   updated_at            DateTime @db.Timestamp(6)
 
-  @@unique([segment_id, stock_notification_id], map: "index_stock_notification_id_and_segment_id")
-  @@index([segment_id], map: "index_ppb_stock_notification_segments_on_segment_id")
-  @@index([stock_notification_id], map: "index_ppb_stock_notification_segments_on_stock_notification_id")
-}
+//   @@unique([segment_id, stock_notification_id], map: "index_stock_notification_id_and_segment_id")
+//   @@index([segment_id], map: "index_ppb_stock_notification_segments_on_segment_id")
+//   @@index([stock_notification_id], map: "index_ppb_stock_notification_segments_on_stock_notification_id")
+// }
 
-model ppb_stock_notifications {
-  id                 BigInt    @id @default(autoincrement())
-  user_id            Int?
-  product_id         Int?
-  variant_id         BigInt?
-  created_at         DateTime  @db.Timestamp(6)
-  updated_at         DateTime  @db.Timestamp(6)
-  last_kakao_sent_at DateTime? @db.Timestamp(6)
-  last_push_sent_at  DateTime? @db.Timestamp(6)
-  last_sms_sent_at   DateTime? @db.Timestamp(6)
-  status             String?   @default("pending") @db.VarChar
-  app_key            String?   @db.VarChar
-  notification_type  String?   @db.VarChar
+// model ppb_stock_notifications {
+//   id                 BigInt    @id @default(autoincrement())
+//   user_id            Int?
+//   product_id         Int?
+//   variant_id         BigInt?
+//   created_at         DateTime  @db.Timestamp(6)
+//   updated_at         DateTime  @db.Timestamp(6)
+//   last_kakao_sent_at DateTime? @db.Timestamp(6)
+//   last_push_sent_at  DateTime? @db.Timestamp(6)
+//   last_sms_sent_at   DateTime? @db.Timestamp(6)
+//   status             String?   @default("pending") @db.VarChar
+//   app_key            String?   @db.VarChar
+//   notification_type  String?   @db.VarChar
 
-  @@index([app_key], map: "index_ppb_stock_notifications_on_app_key")
-  @@index([notification_type], map: "index_ppb_stock_notifications_on_notification_type")
-  @@index([product_id], map: "index_ppb_stock_notifications_on_product_id")
-  @@index([status], map: "index_ppb_stock_notifications_on_status")
-  @@index([user_id], map: "index_ppb_stock_notifications_on_user_id")
-  @@index([variant_id], map: "index_ppb_stock_notifications_on_variant_id")
-}
+//   @@index([app_key], map: "index_ppb_stock_notifications_on_app_key")
+//   @@index([notification_type], map: "index_ppb_stock_notifications_on_notification_type")
+//   @@index([product_id], map: "index_ppb_stock_notifications_on_product_id")
+//   @@index([status], map: "index_ppb_stock_notifications_on_status")
+//   @@index([user_id], map: "index_ppb_stock_notifications_on_user_id")
+//   @@index([variant_id], map: "index_ppb_stock_notifications_on_variant_id")
+// }
 
 // model ppb_validations {
 //   id           BigInt    @id @default(autoincrement())
@@ -2704,42 +2748,51 @@ model ppb_stock_notifications {
 //   @@index([user_id], map: "index_ppb_validations_on_user_id")
 // }
 
-model price_groups {
+model PriceGroups {
   id                BigInt   @id @default(autoincrement())
+
   handle            String?  @db.VarChar
-  created_at        DateTime @db.Timestamp(6)
-  updated_at        DateTime @db.Timestamp(6)
-  allow_auto_coupon Boolean  @default(false)
-  email_domains     Json     @default("[]") @db.Json
-  app_key           String?  @db.VarChar
+  createdAt         DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt         DateTime @map("updated_at") @db.Timestamp(6)
+  allowAutoCoupon   Boolean  @map("allow_auto_coupon")
+  appKey            String?  @map("app_key") @db.VarChar(8000)
 
-  @@unique([handle, app_key], map: "index_price_groups_on_handle_and_app_key")
+  @@unique([handle, appKey], map: "index_price_groups_on_handle_and_app_key")
+
+  priceGroupProducts PriceGroupProducts[]
+
+  @@map("price_groups")
 }
 
-
-model price_group_products {
+model PriceGroupProducts {
   id             BigInt   @id @default(autoincrement())
-  ppb_product_id Int?
-  price_group_id Int?
-  price          Decimal? @db.Decimal
-  created_at     DateTime @db.Timestamp(6)
-  updated_at     DateTime @db.Timestamp(6)
 
-  @@unique([ppb_product_id, price_group_id], map: "index_price_group_products_on_ppb_product_id_and_price_group_id")
-  @@index([ppb_product_id], map: "index_price_group_products_on_ppb_product_id")
-  @@index([price_group_id], map: "index_price_group_products_on_price_group_id")
+  productId      BigInt?    @map("ppb_product_id") @unique
+  priceGroupId   BigInt     @map("price_group_id")
+  price          Decimal?   @db.Decimal
+  createdAt      DateTime   @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime   @map("updated_at") @db.Timestamp(6)
+
+  @@unique([productId, priceGroupId], map: "index_price_group_products_on_ppb_product_id_and_price_group_id")
+  @@index([productId], map: "index_price_group_products_on_ppb_product_id")
+  @@index([priceGroupId], map: "index_price_group_products_on_price_group_id")
+
+  product      Products?   @relation(fields: [productId], references: [id])
+  priceGroup   PriceGroups @relation(fields: [priceGroupId], references: [id])
+
+  @@map("price_group_products")
 }
 
-model product_price_update_queue {
-  id             BigInt   @id @default(autoincrement())
-  ppb_product_id BigInt?
-  previous_price Decimal? @db.Decimal(10, 2)
-  current_price  Decimal? @db.Decimal(10, 2)
-  created_at     DateTime @db.Timestamp(6)
-  updated_at     DateTime @db.Timestamp(6)
+// model product_price_update_queue {
+//   id             BigInt   @id @default(autoincrement())
+//   ppb_product_id BigInt?
+//   previous_price Decimal? @db.Decimal(10, 2)
+//   current_price  Decimal? @db.Decimal(10, 2)
+//   created_at     DateTime @db.Timestamp(6)
+//   updated_at     DateTime @db.Timestamp(6)
 
-  @@index([ppb_product_id], map: "index_product_price_update_queue_on_ppb_product_id")
-}
+//   @@index([ppb_product_id], map: "index_product_price_update_queue_on_ppb_product_id")
+// }
 
 // 안쓰임
 // model products {
@@ -2785,556 +2838,570 @@ model product_price_update_queue {
 
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model raw_records {
-  id                        BigInt    @default(autoincrement())
-  channel_id                Int?
-  date                      DateTime? @db.Date
-  page_view_count           Int?
-  visit_count               Int?
-  order_count               Int?
-  shipping_count            Int?
-  paid_amount               Decimal?  @db.Decimal
-  refund_amount             Decimal?  @db.Decimal
-  order_cost                Decimal?  @db.Decimal
-  ad_cost                   Decimal?  @db.Decimal
-  ad_currency               String?   @db.VarChar(8)
-  ad_fx_rate                Decimal?  @db.Decimal
-  fx_rate                   Decimal?  @db.Decimal
-  vat_custom                Decimal?  @db.Decimal
-  adjust                    Decimal?  @db.Decimal
-  shipping_cost_per_package Decimal?  @db.Decimal
-  currency                  String?   @db.VarChar(8)
-  index                     Int?
-  id_created                DateTime? @db.Date
-  id_revised                DateTime? @db.Date
-  o_x                       String?   @db.VarChar(8)
-  original_raw              String?
-  created_by                Int?
-  updated_by                Int?
-  created_at                DateTime  @db.Timestamp(6)
-  updated_at                DateTime  @db.Timestamp(6)
-  last_updated_by           Int?
-  update_count              Int?      @default(0)
-  histories                 Json?     @default("[]") @db.Json
+// model raw_records {
+//   id                        BigInt    @default(autoincrement())
+//   channel_id                Int?
+//   date                      DateTime? @db.Date
+//   page_view_count           Int?
+//   visit_count               Int?
+//   order_count               Int?
+//   shipping_count            Int?
+//   paid_amount               Decimal?  @db.Decimal
+//   refund_amount             Decimal?  @db.Decimal
+//   order_cost                Decimal?  @db.Decimal
+//   ad_cost                   Decimal?  @db.Decimal
+//   ad_currency               String?   @db.VarChar(8)
+//   ad_fx_rate                Decimal?  @db.Decimal
+//   fx_rate                   Decimal?  @db.Decimal
+//   vat_custom                Decimal?  @db.Decimal
+//   adjust                    Decimal?  @db.Decimal
+//   shipping_cost_per_package Decimal?  @db.Decimal
+//   currency                  String?   @db.VarChar(8)
+//   index                     Int?
+//   id_created                DateTime? @db.Date
+//   id_revised                DateTime? @db.Date
+//   o_x                       String?   @db.VarChar(8)
+//   original_raw              String?
+//   created_by                Int?
+//   updated_by                Int?
+//   created_at                DateTime  @db.Timestamp(6)
+//   updated_at                DateTime  @db.Timestamp(6)
+//   last_updated_by           Int?
+//   update_count              Int?      @default(0)
+//   histories                 Json?     @default("[]") @db.Json
 
-  @@ignore
-}
+//   @@ignore
+// }
 
-model retina_orders {
-  id         BigInt   @id @default(autoincrement())
-  raw_record Json?    @db.Json
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-}
+// model retina_orders {
+//   id         BigInt   @id @default(autoincrement())
+//   raw_record Json?    @db.Json
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+// }
 
-model sc_logs {
-  id           BigInt   @id @default(autoincrement())
-  ppb_order_id Int?
-  log_type     String?  @db.VarChar
-  raw_record   Json?    @db.Json
-  created_at   DateTime @db.Timestamp(6)
-  updated_at   DateTime @db.Timestamp(6)
-}
+// model sc_logs {
+//   id           BigInt   @id @default(autoincrement())
+//   ppb_order_id Int?
+//   log_type     String?  @db.VarChar
+//   raw_record   Json?    @db.Json
+//   created_at   DateTime @db.Timestamp(6)
+//   updated_at   DateTime @db.Timestamp(6)
+// }
 
-model schema_migrations {
-  version String @id @db.VarChar
-}
+// model schema_migrations {
+//   version String @id @db.VarChar
+// }
 
-model segment_users {
-  id         BigInt   @id @default(autoincrement())
-  user_id    Int?
-  segment_id Int?
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
+// model segment_users {
+//   id         BigInt   @id @default(autoincrement())
+//   user_id    Int?
+//   segment_id Int?
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
 
-  @@unique([user_id, segment_id], map: "index_segment_users_on_user_id_and_segment_id")
-  @@index([segment_id], map: "index_segment_users_on_segment_id")
-  @@index([user_id], map: "index_segment_users_on_user_id")
-}
+//   @@unique([user_id, segment_id], map: "index_segment_users_on_user_id_and_segment_id")
+//   @@index([segment_id], map: "index_segment_users_on_segment_id")
+//   @@index([user_id], map: "index_segment_users_on_user_id")
+// }
 
-model segments {
-  id           BigInt    @id @default(autoincrement())
-  title        String?   @db.VarChar
-  created_at   DateTime  @db.Timestamp(6)
-  updated_at   DateTime  @db.Timestamp(6)
-  app_key      String?   @db.VarChar
-  started_at   DateTime? @db.Timestamp(6)
-  finished_at  DateTime? @db.Timestamp(6)
-  segment_type String?   @db.VarChar
+// model segments {
+//   id           BigInt    @id @default(autoincrement())
+//   title        String?   @db.VarChar
+//   created_at   DateTime  @db.Timestamp(6)
+//   updated_at   DateTime  @db.Timestamp(6)
+//   app_key      String?   @db.VarChar
+//   started_at   DateTime? @db.Timestamp(6)
+//   finished_at  DateTime? @db.Timestamp(6)
+//   segment_type String?   @db.VarChar
 
-  @@index([app_key], map: "index_segments_on_app_key")
-}
+//   @@index([app_key], map: "index_segments_on_app_key")
+// }
 
-model settings {
-  id         BigInt   @id @default(autoincrement())
-  app_id     Int?
-  app_key    String?  @db.VarChar
-  key        String?  @db.VarChar
-  value      Json?    @db.Json
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
+model Settings {
+  id             BigInt     @id @default(autoincrement())
+  appId          Int?       @map("app_id")
+  app_key        String?    @map("app_key") @db.VarChar
+  key            String?    @db.VarChar
+  value          Json?      @db.Json
+  createdAt      DateTime   @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime   @map("updated_at") @db.Timestamp(6)
 
   @@unique([app_key, key], map: "index_settings_on_app_key_and_key")
+
+  @@map("settings")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model settings2 {
-  c1 String?
-  c2 String?
-  c3 String?
-  c4 String?
-  c5 Json?   @db.Json
-  c6 String?
-  c7 String?
+// model settings2 {
+//   c1 String?
+//   c2 String?
+//   c3 String?
+//   c4 String?
+//   c5 Json?   @db.Json
+//   c6 String?
+//   c7 String?
 
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model settings3 {
-  c1 String?
-  c2 String?
-  c3 String?
-  c4 String?
-  c5 String?
-  c6 String?
-  c7 String?
-
-  @@ignore
-}
-
-model shopify_analytics {
-  id                    BigInt    @id @default(autoincrement())
-  channel_id            Int?
-  shopify_raw_record_id Int?
-  store_id              String?   @db.VarChar
-  date                  DateTime? @db.Date
-  orders                Int?
-  paid                  Decimal?  @db.Decimal
-  refunds               Decimal?  @db.Decimal
-  total_sessions        Int?
-  total_pageviews       Int?
-  created_at            DateTime  @db.Timestamp(6)
-  updated_at            DateTime  @db.Timestamp(6)
-
-  @@index([date], map: "index_shopify_analytics_on_date")
-  @@index([store_id], map: "index_shopify_analytics_on_store_id")
-}
-
-model shopify_orders {
-  id                                BigInt    @id @default(autoincrement())
-  channel_id                        Int?
-  store_id                          String?   @db.VarChar
-  shopify_id                        BigInt?   @unique(map: "index_shopify_orders_on_shopify_id")
-  shopify_updated_at                DateTime? @db.Timestamp(6)
-  shopify_financial_status          String?   @db.VarChar
-  shopify_fulfillment_status        String?   @db.VarChar
-  raw_record                        Json?     @db.Json
-  created_at                        DateTime  @db.Timestamp(6)
-  updated_at                        DateTime  @db.Timestamp(6)
-  shopify_created_at                DateTime? @db.Timestamp(6)
-  shopify_cancelled_at              DateTime? @db.Timestamp(6)
-  shopify_closed_at                 DateTime? @db.Timestamp(6)
-  shopify_processed_at              DateTime? @db.Timestamp(6)
-  shopify_currency                  String?   @db.VarChar
-  shopify_total_price               Decimal?  @default(0.0) @db.Decimal
-  shopify_subtotal_price            Decimal?  @default(0.0) @db.Decimal
-  shopify_total_tax                 Decimal?  @default(0.0) @db.Decimal
-  shopify_taxes_included            Boolean?
-  shopify_total_discounts           Decimal?  @default(0.0) @db.Decimal
-  shopify_total_line_items_price    Decimal?  @default(0.0) @db.Decimal
-  total_refund_amount               Decimal?  @default(0.0) @db.Decimal
-  total_shipping_price              Decimal?  @default(0.0) @db.Decimal
-  cost_total                        Decimal?  @default(0.0) @db.Decimal
-  cost_order                        Decimal?  @default(0.0) @db.Decimal
-  cost_refund                       Decimal?  @default(0.0) @db.Decimal
-  cost_shipping                     Decimal?  @default(0.0) @db.Decimal
-  cost_updated_at                   DateTime? @db.Timestamp(6)
-  shopify_name                      String?   @unique(map: "index_shopify_orders_on_shopify_name") @db.VarChar
-  tx                                Json?     @default("{\"init\":null,\"modified\":null}") @db.Json
-  transactions                      Json?     @default("[]") @db.Json
-  paid_at                           DateTime? @db.Timestamp(6)
-  fxrate                            Decimal?  @default(0.0) @db.Decimal
-  vat_custom                        Decimal?  @default(0.0) @db.Decimal
-  adjust                            Decimal?  @default(0.0) @db.Decimal
-  shopify_test                      Boolean?
-  ppb_price_total                   Decimal?  @default(0.0) @db.Decimal
-  ppb_price_cancel_refund           Decimal?  @default(0.0) @db.Decimal
-  ppb_price_discounts               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_sales                   Decimal?  @default(0.0) @db.Decimal
-  ppb_price_vat                     Decimal?  @default(0.0) @db.Decimal
-  ppb_price_net_sales               Decimal?  @default(0.0) @db.Decimal
-  ppb_revenue                       Decimal?  @default(0.0) @db.Decimal
-  ppb_price_total_krw               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_cancel_refund_krw       Decimal?  @default(0.0) @db.Decimal
-  ppb_price_discounts_krw           Decimal?  @default(0.0) @db.Decimal
-  ppb_price_sales_krw               Decimal?  @default(0.0) @db.Decimal
-  ppb_price_vat_krw                 Decimal?  @default(0.0) @db.Decimal
-  ppb_price_net_sales_krw           Decimal?  @default(0.0) @db.Decimal
-  ppb_franchise_id                  Int?
-  token_customer                    String?   @unique(map: "index_shopify_orders_on_token_customer") @db.VarChar(64)
-  token_franchise                   String?   @unique(map: "index_shopify_orders_on_token_franchise") @db.VarChar(64)
-  status_customer                   String?   @default("pending") @db.VarChar(32)
-  status_franchise                  String?   @default("pending") @db.VarChar(32)
-  status_ppb                        String?   @default("pending") @db.VarChar(32)
-  status_shipping                   String?   @default("pending") @db.VarChar(32)
-  status_customer_updated_at        DateTime? @db.Timestamp(6)
-  status_franchise_updated_at       DateTime? @db.Timestamp(6)
-  status_ppb_updated_at             DateTime? @db.Timestamp(6)
-  status_shipping_updated_at        DateTime? @db.Timestamp(6)
-  status_shipping_return            String?   @default("pending") @db.VarChar(16)
-  status_shipping_return_updated_at DateTime? @db.Timestamp(6)
-  status_logs                       Json?     @default("{}") @db.Json
-  ppb_notes                         Json?     @default("[]") @db.Json
-  review_point                      Float?
-  review_comment                    String?
-  review_updated_at                 DateTime? @db.Timestamp(6)
-  ppb_tracking_number               String?   @db.VarChar
-  ppb_tracking_number_return        String?   @db.VarChar
-  delivered_at                      DateTime? @db.Timestamp(6)
-  customer_phone                    String?   @db.VarChar
-  customer_name                     String?   @db.VarChar
-  accepted_by                       String?   @db.VarChar
-  shipping_started_at               DateTime? @db.Timestamp(6)
-  shipping_returned_at              DateTime? @db.Timestamp(6)
-  utm_source                        String?   @db.VarChar
-  utm_medium                        String?   @db.VarChar
-  utm_campaign                      String?   @db.VarChar
-  utm_content                       String?   @db.VarChar
-  shopify_landing_site              String?
-  shipping_carrier                  String?   @db.VarChar
-  returned_line_items               Json?     @default("[]") @db.Json
-  customer_canceled_at              DateTime? @db.Timestamp(6)
-  status_payment                    String?   @default("pending") @db.VarChar(32)
-  last_refunded_at                  DateTime? @db.Timestamp(6)
-  ppb_name                          String?   @unique(map: "index_shopify_orders_on_ppb_name") @db.VarChar
-  is_postpaid                       Boolean?  @default(false)
-  is_express                        Boolean?  @default(false)
-
-  @@index([channel_id], map: "index_shopify_orders_on_channel_id")
-  @@index([ppb_franchise_id], map: "index_shopify_orders_on_ppb_franchise_id")
-  @@index([ppb_tracking_number], map: "index_shopify_orders_on_ppb_tracking_number")
-  @@index([ppb_tracking_number_return], map: "index_shopify_orders_on_ppb_tracking_number_return")
-  @@index([shopify_created_at], map: "index_shopify_orders_on_shopify_created_at")
-  @@index([shopify_financial_status], map: "index_shopify_orders_on_shopify_financial_status")
-  @@index([shopify_fulfillment_status], map: "index_shopify_orders_on_shopify_fulfillment_status")
-  @@index([shopify_test], map: "index_shopify_orders_on_shopify_test")
-  @@index([status_customer], map: "index_shopify_orders_on_status_customer")
-  @@index([status_franchise], map: "index_shopify_orders_on_status_franchise")
-  @@index([status_payment], map: "index_shopify_orders_on_status_payment")
-  @@index([status_ppb], map: "index_shopify_orders_on_status_ppb")
-  @@index([status_shipping], map: "index_shopify_orders_on_status_shipping")
-  @@index([status_shipping_return], map: "index_shopify_orders_on_status_shipping_return")
-  @@index([store_id], map: "index_shopify_orders_on_store_id")
-  @@index([utm_campaign], map: "index_shopify_orders_on_utm_campaign")
-  @@index([utm_source], map: "index_shopify_orders_on_utm_source")
-}
-
-model shopify_products {
-  id                 BigInt    @id @default(autoincrement())
-  channel_id         Int?
-  store_id           String?   @db.VarChar
-  shopify_id         BigInt?   @unique(map: "index_shopify_products_on_shopify_id")
-  shopify_updated_at DateTime? @db.Timestamp(6)
-  raw_record         Json?     @db.Json
-  created_at         DateTime  @db.Timestamp(6)
-  updated_at         DateTime  @db.Timestamp(6)
-  package_image      String?   @db.VarChar
-  extra              Json?     @default("{}") @db.Json
-
-  @@index([channel_id], map: "index_shopify_products_on_channel_id")
-  @@index([store_id], map: "index_shopify_products_on_store_id")
-}
-
-model shopify_raw_records {
-  id         BigInt   @id @default(autoincrement())
-  channel_id Int?
-  store_id   String?  @db.VarChar
-  query      String?  @db.VarChar
-  url        String?  @db.VarChar
-  json_data  Json?    @db.Json
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-
-  @@index([store_id], map: "index_shopify_raw_records_on_store_id")
-}
-
-model shopify_refunds {
-  id                     BigInt    @id @default(autoincrement())
-  channel_id             Int?
-  local_shopify_order_id Int?
-  shopify_refund_id      BigInt?
-  shopify_created_at     DateTime? @db.Timestamp(6)
-  refund_amount          Float?
-  raw_record             Json?     @db.Json
-  created_at             DateTime  @db.Timestamp(6)
-  updated_at             DateTime  @db.Timestamp(6)
-  store_id               String?   @db.VarChar(64)
-  is_transaction         Boolean?
-
-  @@index([is_transaction], map: "index_shopify_refunds_on_is_transaction")
-  @@index([shopify_refund_id], map: "index_shopify_refunds_on_shopify_refund_id")
-  @@index([store_id], map: "index_shopify_refunds_on_store_id")
-}
-
-model square_checkouts {
-  id               BigInt   @id @default(autoincrement())
-  square_device_id Int?
-  creator_id       Int?
-  booking_id       Int?
-  amount           Int?
-  checkout_id      String?  @db.VarChar
-  status           String?  @default("pending") @db.VarChar
-  cancel_reason    String?  @db.VarChar
-  raw_record       Json?    @db.Json
-  created_at       DateTime @db.Timestamp(6)
-  updated_at       DateTime @db.Timestamp(6)
-
-  @@index([booking_id], map: "index_square_checkouts_on_booking_id")
-  @@index([checkout_id], map: "index_square_checkouts_on_checkout_id")
-  @@index([creator_id], map: "index_square_checkouts_on_creator_id")
-  @@index([square_device_id], map: "index_square_checkouts_on_square_device_id")
-  @@index([status], map: "index_square_checkouts_on_status")
-}
-
-model square_customers {
-  id            BigInt    @id @default(autoincrement())
-  customer_id   String    @unique(map: "index_square_customers_on_customer_id") @db.VarChar
-  family_name   String?   @db.VarChar
-  given_name    String?   @db.VarChar
-  email_address String?   @db.VarChar
-  phone_number  String?   @db.VarChar
-  deleted       Boolean?  @default(false)
-  deleted_at    DateTime? @db.Timestamp(6)
-  created_at    DateTime  @db.Timestamp(6)
-  updated_at    DateTime  @db.Timestamp(6)
-
-  @@index([deleted], map: "index_square_customers_on_deleted")
-}
-
-model square_devices {
-  id               BigInt    @id @default(autoincrement())
-  ppb_franchise_id Int?
-  device_id        String?   @db.VarChar
-  code             String?   @db.VarChar
-  pair_by          DateTime? @db.Timestamp(6)
-  nick_name        String?   @db.VarChar
-  status           String?   @db.VarChar
-  raw_record       Json?     @db.Json
-  access_token     String?   @db.VarChar
-  merchant_id      String?   @db.VarChar
-
-  @@index([access_token], map: "index_square_devices_on_access_token")
-  @@index([code], map: "index_square_devices_on_code")
-  @@index([device_id], map: "index_square_devices_on_device_id")
-  @@index([merchant_id], map: "index_square_devices_on_merchant_id")
-  @@index([ppb_franchise_id], map: "index_square_devices_on_ppb_franchise_id")
-  @@index([status], map: "index_square_devices_on_status")
-}
-
-model square_events {
-  id         BigInt   @id @default(autoincrement())
-  raw_record Json?    @db.Json
-  event_type String?  @db.VarChar
-  event_id   String?  @unique(map: "index_square_events_on_event_id") @db.VarChar
-  status     String?  @default("pending") @db.VarChar
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-
-  @@index([event_type], map: "index_square_events_on_event_type")
-  @@index([status], map: "index_square_events_on_status")
-}
-
-model square_fulfillments {
-  id                 BigInt   @id @default(autoincrement())
-  fulfillment_id     String?  @unique(map: "index_square_fulfillments_on_fulfillment_id") @db.VarChar
-  location_id        String?  @db.VarChar
-  order_id           String?  @db.VarChar
-  square_location_id Int?
-  square_order_id    Int?
-  raw_record         Json?    @db.Json
-  status             String?  @db.VarChar
-  created_at         DateTime @db.Timestamp(6)
-  updated_at         DateTime @db.Timestamp(6)
-
-  @@index([location_id], map: "index_square_fulfillments_on_location_id")
-  @@index([order_id], map: "index_square_fulfillments_on_order_id")
-  @@index([square_location_id], map: "index_square_fulfillments_on_square_location_id")
-  @@index([square_order_id], map: "index_square_fulfillments_on_square_order_id")
-  @@index([status], map: "index_square_fulfillments_on_status")
-}
-
-model square_locations {
-  id          BigInt   @id @default(autoincrement())
-  location_id String?  @unique(map: "index_square_locations_on_location_id") @db.VarChar
-  created_at  DateTime @db.Timestamp(6)
-  updated_at  DateTime @db.Timestamp(6)
-  raw_record  Json?    @db.Json
-}
-
-model square_orders {
-  id                 BigInt    @id @default(autoincrement())
-  order_id           String?   @unique(map: "index_square_orders_on_order_id") @db.VarChar
-  location_id        String?   @db.VarChar
-  device_id          String?   @db.VarChar
-  square_location_id Int?
-  square_device_id   Int?
-  raw_record         Json?     @db.Json
-  status             String?   @db.VarChar
-  square_customer_id Int?
-  is_fetched         Boolean?  @default(false)
-  last_fetched_at    DateTime? @db.Timestamp(6)
-  booking_id         Int?
-  user_id            Int?
-
-  @@index([device_id], map: "index_square_orders_on_device_id")
-  @@index([is_fetched], map: "index_square_orders_on_is_fetched")
-  @@index([location_id], map: "index_square_orders_on_location_id")
-  @@index([square_customer_id], map: "index_square_orders_on_square_customer_id")
-  @@index([square_device_id], map: "index_square_orders_on_square_device_id")
-  @@index([square_location_id], map: "index_square_orders_on_square_location_id")
-  @@index([status], map: "index_square_orders_on_status")
-}
-
-model square_payments {
-  id                 BigInt   @id @default(autoincrement())
-  square_checkout_id Int?
-  square_device_id   Int?
-  payment_id         String?  @db.VarChar
-  status             String?  @db.VarChar
-  amount             Int?
-  currency           String?  @db.VarChar
-  creator_id         Int?
-  booking_id         Int?
-  source_type        String?  @db.VarChar
-  receipt_number     String?  @db.VarChar
-  receipt_url        String?  @db.VarChar
-  raw_record         Json?    @db.Json
-  created_at         DateTime @db.Timestamp(6)
-  updated_at         DateTime @db.Timestamp(6)
-  refunded           Int?     @default(0)
-  square_order_id    Int?
-
-  @@index([booking_id], map: "index_square_payments_on_booking_id")
-  @@index([creator_id], map: "index_square_payments_on_creator_id")
-  @@index([payment_id], map: "index_square_payments_on_payment_id")
-  @@index([receipt_number], map: "index_square_payments_on_receipt_number")
-  @@index([source_type], map: "index_square_payments_on_source_type")
-  @@index([square_checkout_id], map: "index_square_payments_on_square_checkout_id")
-  @@index([square_device_id], map: "index_square_payments_on_square_device_id")
-  @@index([square_order_id], map: "index_square_payments_on_square_order_id")
-  @@index([status], map: "index_square_payments_on_status")
-}
-
-model square_refunds {
-  id                 BigInt   @id @default(autoincrement())
-  refund_id          String?  @unique(map: "index_square_refunds_on_refund_id") @db.VarChar
-  location_id        String?  @db.VarChar
-  device_id          String?  @db.VarChar
-  order_id           String?  @db.VarChar
-  payment_id         String?  @db.VarChar
-  square_location_id Int?
-  square_order_id    Int?
-  square_device_id   Int?
-  square_payment_id  Int?
-  amount             Int?
-  currency           String?  @db.VarChar
-  status             String?  @db.VarChar
-  reason             String?  @db.VarChar
-  last_4             String?  @db.VarChar
-  raw_record         Json?    @default("{}") @db.Json
-  created_at         DateTime @db.Timestamp(6)
-  updated_at         DateTime @db.Timestamp(6)
-  booking_id         Int?
-
-  @@index([booking_id], map: "index_square_refunds_on_booking_id")
-  @@index([device_id], map: "index_square_refunds_on_device_id")
-  @@index([location_id], map: "index_square_refunds_on_location_id")
-  @@index([order_id], map: "index_square_refunds_on_order_id")
-  @@index([payment_id], map: "index_square_refunds_on_payment_id")
-  @@index([square_device_id], map: "index_square_refunds_on_square_device_id")
-  @@index([square_location_id], map: "index_square_refunds_on_square_location_id")
-  @@index([square_order_id], map: "index_square_refunds_on_square_order_id")
-  @@index([square_payment_id], map: "index_square_refunds_on_square_payment_id")
-  @@index([status], map: "index_square_refunds_on_status")
-}
-
-model stripe_coupons {
-  id                  BigInt  @id @default(autoincrement())
-  coupon_code         String? @unique(map: "index_stripe_coupons_on_coupon_code") @db.VarChar
-  stripe_coupon_id    String? @unique(map: "index_stripe_coupons_on_stripe_coupon_id") @db.VarChar
-  ppb_coupon_stamp_id Int?    @unique(map: "index_stripe_coupons_on_ppb_coupon_stamp_id")
-  raw_record          Json?   @db.Json
-}
-
-model stripe_events {
-  id         BigInt   @id @default(autoincrement())
-  raw_record Json?    @default("{}") @db.Json
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-}
-
-model stripe_sessions {
-  id                     BigInt   @id @default(autoincrement())
-  stripe_id              String?  @unique(map: "index_stripe_sessions_on_stripe_id") @db.VarChar
-  status                 String?  @db.VarChar
-  user_id                Int?
-  payment_id             Int?
-  ppb_cart_id            Int?
-  selected_cart_item_ids Json?    @default("[]") @db.Json
-  raw_record             Json?    @default("{}") @db.Json
-  created_at             DateTime @db.Timestamp(6)
-  updated_at             DateTime @db.Timestamp(6)
-  app_key                String?  @db.VarChar
-
-  @@index([app_key], map: "index_stripe_sessions_on_app_key")
-  @@index([payment_id], map: "index_stripe_sessions_on_payment_id")
-  @@index([status], map: "index_stripe_sessions_on_status")
-}
-
-model subjects {
-  id          BigInt   @id @default(autoincrement())
-  project_id  Int?
-  description String?  @db.VarChar
-  created_at  DateTime @db.Timestamp(6)
-  updated_at  DateTime @db.Timestamp(6)
-}
+//   @@ignore
+// }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model tmp_hapa_jp {
-  c1 String?
-  c2 String?
+// model settings3 {
+//   c1 String?
+//   c2 String?
+//   c3 String?
+//   c4 String?
+//   c5 String?
+//   c6 String?
+//   c7 String?
 
-  @@ignore
-}
+//   @@ignore
+// }
 
-model tmp_subscribers {
-  id                BigInt    @id @default(autoincrement())
-  email             String?   @unique(map: "index_tmp_subscribers_on_email") @db.VarChar
-  created_at        DateTime  @db.Timestamp(6)
-  updated_at        DateTime  @db.Timestamp(6)
-  welcome_issued_at DateTime? @db.Timestamp(6)
-}
+// model shopify_analytics {
+//   id                    BigInt    @id @default(autoincrement())
+//   channel_id            Int?
+//   shopify_raw_record_id Int?
+//   store_id              String?   @db.VarChar
+//   date                  DateTime? @db.Date
+//   orders                Int?
+//   paid                  Decimal?  @db.Decimal
+//   refunds               Decimal?  @db.Decimal
+//   total_sessions        Int?
+//   total_pageviews       Int?
+//   created_at            DateTime  @db.Timestamp(6)
+//   updated_at            DateTime  @db.Timestamp(6)
 
-model tmps {
-  id    BigInt @id @default(autoincrement())
-  email String @db.VarChar
+//   @@index([date], map: "index_shopify_analytics_on_date")
+//   @@index([store_id], map: "index_shopify_analytics_on_store_id")
+// }
 
-  @@index([email], map: "index_tmps_on_email")
-}
+// model shopify_orders {
+//   id                                BigInt    @id @default(autoincrement())
+//   channel_id                        Int?
+//   store_id                          String?   @db.VarChar
+//   shopify_id                        BigInt?   @unique(map: "index_shopify_orders_on_shopify_id")
+//   shopify_updated_at                DateTime? @db.Timestamp(6)
+//   shopify_financial_status          String?   @db.VarChar
+//   shopify_fulfillment_status        String?   @db.VarChar
+//   raw_record                        Json?     @db.Json
+//   created_at                        DateTime  @db.Timestamp(6)
+//   updated_at                        DateTime  @db.Timestamp(6)
+//   shopify_created_at                DateTime? @db.Timestamp(6)
+//   shopify_cancelled_at              DateTime? @db.Timestamp(6)
+//   shopify_closed_at                 DateTime? @db.Timestamp(6)
+//   shopify_processed_at              DateTime? @db.Timestamp(6)
+//   shopify_currency                  String?   @db.VarChar
+//   shopify_total_price               Decimal?  @default(0.0) @db.Decimal
+//   shopify_subtotal_price            Decimal?  @default(0.0) @db.Decimal
+//   shopify_total_tax                 Decimal?  @default(0.0) @db.Decimal
+//   shopify_taxes_included            Boolean?
+//   shopify_total_discounts           Decimal?  @default(0.0) @db.Decimal
+//   shopify_total_line_items_price    Decimal?  @default(0.0) @db.Decimal
+//   total_refund_amount               Decimal?  @default(0.0) @db.Decimal
+//   total_shipping_price              Decimal?  @default(0.0) @db.Decimal
+//   cost_total                        Decimal?  @default(0.0) @db.Decimal
+//   cost_order                        Decimal?  @default(0.0) @db.Decimal
+//   cost_refund                       Decimal?  @default(0.0) @db.Decimal
+//   cost_shipping                     Decimal?  @default(0.0) @db.Decimal
+//   cost_updated_at                   DateTime? @db.Timestamp(6)
+//   shopify_name                      String?   @unique(map: "index_shopify_orders_on_shopify_name") @db.VarChar
+//   tx                                Json?     @default("{\"init\":null,\"modified\":null}") @db.Json
+//   transactions                      Json?     @default("[]") @db.Json
+//   paid_at                           DateTime? @db.Timestamp(6)
+//   fxrate                            Decimal?  @default(0.0) @db.Decimal
+//   vat_custom                        Decimal?  @default(0.0) @db.Decimal
+//   adjust                            Decimal?  @default(0.0) @db.Decimal
+//   shopify_test                      Boolean?
+//   ppb_price_total                   Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_cancel_refund           Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_discounts               Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_sales                   Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_vat                     Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_net_sales               Decimal?  @default(0.0) @db.Decimal
+//   ppb_revenue                       Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_total_krw               Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_cancel_refund_krw       Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_discounts_krw           Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_sales_krw               Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_vat_krw                 Decimal?  @default(0.0) @db.Decimal
+//   ppb_price_net_sales_krw           Decimal?  @default(0.0) @db.Decimal
+//   ppb_franchise_id                  Int?
+//   token_customer                    String?   @unique(map: "index_shopify_orders_on_token_customer") @db.VarChar(64)
+//   token_franchise                   String?   @unique(map: "index_shopify_orders_on_token_franchise") @db.VarChar(64)
+//   status_customer                   String?   @default("pending") @db.VarChar(32)
+//   status_franchise                  String?   @default("pending") @db.VarChar(32)
+//   status_ppb                        String?   @default("pending") @db.VarChar(32)
+//   status_shipping                   String?   @default("pending") @db.VarChar(32)
+//   status_customer_updated_at        DateTime? @db.Timestamp(6)
+//   status_franchise_updated_at       DateTime? @db.Timestamp(6)
+//   status_ppb_updated_at             DateTime? @db.Timestamp(6)
+//   status_shipping_updated_at        DateTime? @db.Timestamp(6)
+//   status_shipping_return            String?   @default("pending") @db.VarChar(16)
+//   status_shipping_return_updated_at DateTime? @db.Timestamp(6)
+//   status_logs                       Json?     @default("{}") @db.Json
+//   ppb_notes                         Json?     @default("[]") @db.Json
+//   review_point                      Float?
+//   review_comment                    String?
+//   review_updated_at                 DateTime? @db.Timestamp(6)
+//   ppb_tracking_number               String?   @db.VarChar
+//   ppb_tracking_number_return        String?   @db.VarChar
+//   delivered_at                      DateTime? @db.Timestamp(6)
+//   customer_phone                    String?   @db.VarChar
+//   customer_name                     String?   @db.VarChar
+//   accepted_by                       String?   @db.VarChar
+//   shipping_started_at               DateTime? @db.Timestamp(6)
+//   shipping_returned_at              DateTime? @db.Timestamp(6)
+//   utm_source                        String?   @db.VarChar
+//   utm_medium                        String?   @db.VarChar
+//   utm_campaign                      String?   @db.VarChar
+//   utm_content                       String?   @db.VarChar
+//   shopify_landing_site              String?
+//   shipping_carrier                  String?   @db.VarChar
+//   returned_line_items               Json?     @default("[]") @db.Json
+//   customer_canceled_at              DateTime? @db.Timestamp(6)
+//   status_payment                    String?   @default("pending") @db.VarChar(32)
+//   last_refunded_at                  DateTime? @db.Timestamp(6)
+//   ppb_name                          String?   @unique(map: "index_shopify_orders_on_ppb_name") @db.VarChar
+//   is_postpaid                       Boolean?  @default(false)
+//   is_express                        Boolean?  @default(false)
 
-model user_favorite_products {
-  id             BigInt   @id @default(autoincrement())
-  user_id        BigInt?
-  ppb_product_id BigInt?
-  price          String?  @db.VarChar
-  created_at     DateTime @db.Timestamp(6)
-  updated_at     DateTime @db.Timestamp(6)
+//   @@index([channel_id], map: "index_shopify_orders_on_channel_id")
+//   @@index([ppb_franchise_id], map: "index_shopify_orders_on_ppb_franchise_id")
+//   @@index([ppb_tracking_number], map: "index_shopify_orders_on_ppb_tracking_number")
+//   @@index([ppb_tracking_number_return], map: "index_shopify_orders_on_ppb_tracking_number_return")
+//   @@index([shopify_created_at], map: "index_shopify_orders_on_shopify_created_at")
+//   @@index([shopify_financial_status], map: "index_shopify_orders_on_shopify_financial_status")
+//   @@index([shopify_fulfillment_status], map: "index_shopify_orders_on_shopify_fulfillment_status")
+//   @@index([shopify_test], map: "index_shopify_orders_on_shopify_test")
+//   @@index([status_customer], map: "index_shopify_orders_on_status_customer")
+//   @@index([status_franchise], map: "index_shopify_orders_on_status_franchise")
+//   @@index([status_payment], map: "index_shopify_orders_on_status_payment")
+//   @@index([status_ppb], map: "index_shopify_orders_on_status_ppb")
+//   @@index([status_shipping], map: "index_shopify_orders_on_status_shipping")
+//   @@index([status_shipping_return], map: "index_shopify_orders_on_status_shipping_return")
+//   @@index([store_id], map: "index_shopify_orders_on_store_id")
+//   @@index([utm_campaign], map: "index_shopify_orders_on_utm_campaign")
+//   @@index([utm_source], map: "index_shopify_orders_on_utm_source")
+// }
 
-  @@unique([user_id, ppb_product_id], map: "index_user_favorite_products_on_user_id_and_ppb_product_id")
-  @@index([ppb_product_id], map: "index_user_favorite_products_on_ppb_product_id")
-  @@index([user_id], map: "index_user_favorite_products_on_user_id")
-}
+// model shopify_products {
+//   id                 BigInt    @id @default(autoincrement())
+//   channel_id         Int?
+//   store_id           String?   @db.VarChar
+//   shopify_id         BigInt?   @unique(map: "index_shopify_products_on_shopify_id")
+//   shopify_updated_at DateTime? @db.Timestamp(6)
+//   raw_record         Json?     @db.Json
+//   created_at         DateTime  @db.Timestamp(6)
+//   updated_at         DateTime  @db.Timestamp(6)
+//   package_image      String?   @db.VarChar
+//   extra              Json?     @default("{}") @db.Json
+
+//   @@index([channel_id], map: "index_shopify_products_on_channel_id")
+//   @@index([store_id], map: "index_shopify_products_on_store_id")
+// }
+
+// model shopify_raw_records {
+//   id         BigInt   @id @default(autoincrement())
+//   channel_id Int?
+//   store_id   String?  @db.VarChar
+//   query      String?  @db.VarChar
+//   url        String?  @db.VarChar
+//   json_data  Json?    @db.Json
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+
+//   @@index([store_id], map: "index_shopify_raw_records_on_store_id")
+// }
+
+// model shopify_refunds {
+//   id                     BigInt    @id @default(autoincrement())
+//   channel_id             Int?
+//   local_shopify_order_id Int?
+//   shopify_refund_id      BigInt?
+//   shopify_created_at     DateTime? @db.Timestamp(6)
+//   refund_amount          Float?
+//   raw_record             Json?     @db.Json
+//   created_at             DateTime  @db.Timestamp(6)
+//   updated_at             DateTime  @db.Timestamp(6)
+//   store_id               String?   @db.VarChar(64)
+//   is_transaction         Boolean?
+
+//   @@index([is_transaction], map: "index_shopify_refunds_on_is_transaction")
+//   @@index([shopify_refund_id], map: "index_shopify_refunds_on_shopify_refund_id")
+//   @@index([store_id], map: "index_shopify_refunds_on_store_id")
+// }
+
+// 안쓰임(미국사업)
+// model square_checkouts {
+//   id               BigInt   @id @default(autoincrement())
+//   square_device_id Int?
+//   creator_id       Int?
+//   booking_id       Int?
+//   amount           Int?
+//   checkout_id      String?  @db.VarChar
+//   status           String?  @default("pending") @db.VarChar
+//   cancel_reason    String?  @db.VarChar
+//   raw_record       Json?    @db.Json
+//   created_at       DateTime @db.Timestamp(6)
+//   updated_at       DateTime @db.Timestamp(6)
+
+//   @@index([booking_id], map: "index_square_checkouts_on_booking_id")
+//   @@index([checkout_id], map: "index_square_checkouts_on_checkout_id")
+//   @@index([creator_id], map: "index_square_checkouts_on_creator_id")
+//   @@index([square_device_id], map: "index_square_checkouts_on_square_device_id")
+//   @@index([status], map: "index_square_checkouts_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_customers {
+//   id            BigInt    @id @default(autoincrement())
+//   customer_id   String    @unique(map: "index_square_customers_on_customer_id") @db.VarChar
+//   family_name   String?   @db.VarChar
+//   given_name    String?   @db.VarChar
+//   email_address String?   @db.VarChar
+//   phone_number  String?   @db.VarChar
+//   deleted       Boolean?  @default(false)
+//   deleted_at    DateTime? @db.Timestamp(6)
+//   created_at    DateTime  @db.Timestamp(6)
+//   updated_at    DateTime  @db.Timestamp(6)
+
+//   @@index([deleted], map: "index_square_customers_on_deleted")
+// }
+
+// 안쓰임(미국사업)
+// model square_devices {
+//   id               BigInt    @id @default(autoincrement())
+//   ppb_franchise_id Int?
+//   device_id        String?   @db.VarChar
+//   code             String?   @db.VarChar
+//   pair_by          DateTime? @db.Timestamp(6)
+//   nick_name        String?   @db.VarChar
+//   status           String?   @db.VarChar
+//   raw_record       Json?     @db.Json
+//   access_token     String?   @db.VarChar
+//   merchant_id      String?   @db.VarChar
+
+//   @@index([access_token], map: "index_square_devices_on_access_token")
+//   @@index([code], map: "index_square_devices_on_code")
+//   @@index([device_id], map: "index_square_devices_on_device_id")
+//   @@index([merchant_id], map: "index_square_devices_on_merchant_id")
+//   @@index([ppb_franchise_id], map: "index_square_devices_on_ppb_franchise_id")
+//   @@index([status], map: "index_square_devices_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_events {
+//   id         BigInt   @id @default(autoincrement())
+//   raw_record Json?    @db.Json
+//   event_type String?  @db.VarChar
+//   event_id   String?  @unique(map: "index_square_events_on_event_id") @db.VarChar
+//   status     String?  @default("pending") @db.VarChar
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+
+//   @@index([event_type], map: "index_square_events_on_event_type")
+//   @@index([status], map: "index_square_events_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_fulfillments {
+//   id                 BigInt   @id @default(autoincrement())
+//   fulfillment_id     String?  @unique(map: "index_square_fulfillments_on_fulfillment_id") @db.VarChar
+//   location_id        String?  @db.VarChar
+//   order_id           String?  @db.VarChar
+//   square_location_id Int?
+//   square_order_id    Int?
+//   raw_record         Json?    @db.Json
+//   status             String?  @db.VarChar
+//   created_at         DateTime @db.Timestamp(6)
+//   updated_at         DateTime @db.Timestamp(6)
+
+//   @@index([location_id], map: "index_square_fulfillments_on_location_id")
+//   @@index([order_id], map: "index_square_fulfillments_on_order_id")
+//   @@index([square_location_id], map: "index_square_fulfillments_on_square_location_id")
+//   @@index([square_order_id], map: "index_square_fulfillments_on_square_order_id")
+//   @@index([status], map: "index_square_fulfillments_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_locations {
+//   id          BigInt   @id @default(autoincrement())
+//   location_id String?  @unique(map: "index_square_locations_on_location_id") @db.VarChar
+//   created_at  DateTime @db.Timestamp(6)
+//   updated_at  DateTime @db.Timestamp(6)
+//   raw_record  Json?    @db.Json
+// }
+
+// 안쓰임(미국사업)
+// model square_orders {
+//   id                 BigInt    @id @default(autoincrement())
+//   order_id           String?   @unique(map: "index_square_orders_on_order_id") @db.VarChar
+//   location_id        String?   @db.VarChar
+//   device_id          String?   @db.VarChar
+//   square_location_id Int?
+//   square_device_id   Int?
+//   raw_record         Json?     @db.Json
+//   status             String?   @db.VarChar
+//   square_customer_id Int?
+//   is_fetched         Boolean?  @default(false)
+//   last_fetched_at    DateTime? @db.Timestamp(6)
+//   booking_id         Int?
+//   user_id            Int?
+
+//   @@index([device_id], map: "index_square_orders_on_device_id")
+//   @@index([is_fetched], map: "index_square_orders_on_is_fetched")
+//   @@index([location_id], map: "index_square_orders_on_location_id")
+//   @@index([square_customer_id], map: "index_square_orders_on_square_customer_id")
+//   @@index([square_device_id], map: "index_square_orders_on_square_device_id")
+//   @@index([square_location_id], map: "index_square_orders_on_square_location_id")
+//   @@index([status], map: "index_square_orders_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_payments {
+//   id                 BigInt   @id @default(autoincrement())
+//   square_checkout_id Int?
+//   square_device_id   Int?
+//   payment_id         String?  @db.VarChar
+//   status             String?  @db.VarChar
+//   amount             Int?
+//   currency           String?  @db.VarChar
+//   creator_id         Int?
+//   booking_id         Int?
+//   source_type        String?  @db.VarChar
+//   receipt_number     String?  @db.VarChar
+//   receipt_url        String?  @db.VarChar
+//   raw_record         Json?    @db.Json
+//   created_at         DateTime @db.Timestamp(6)
+//   updated_at         DateTime @db.Timestamp(6)
+//   refunded           Int?     @default(0)
+//   square_order_id    Int?
+
+//   @@index([booking_id], map: "index_square_payments_on_booking_id")
+//   @@index([creator_id], map: "index_square_payments_on_creator_id")
+//   @@index([payment_id], map: "index_square_payments_on_payment_id")
+//   @@index([receipt_number], map: "index_square_payments_on_receipt_number")
+//   @@index([source_type], map: "index_square_payments_on_source_type")
+//   @@index([square_checkout_id], map: "index_square_payments_on_square_checkout_id")
+//   @@index([square_device_id], map: "index_square_payments_on_square_device_id")
+//   @@index([square_order_id], map: "index_square_payments_on_square_order_id")
+//   @@index([status], map: "index_square_payments_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model square_refunds {
+//   id                 BigInt   @id @default(autoincrement())
+//   refund_id          String?  @unique(map: "index_square_refunds_on_refund_id") @db.VarChar
+//   location_id        String?  @db.VarChar
+//   device_id          String?  @db.VarChar
+//   order_id           String?  @db.VarChar
+//   payment_id         String?  @db.VarChar
+//   square_location_id Int?
+//   square_order_id    Int?
+//   square_device_id   Int?
+//   square_payment_id  Int?
+//   amount             Int?
+//   currency           String?  @db.VarChar
+//   status             String?  @db.VarChar
+//   reason             String?  @db.VarChar
+//   last_4             String?  @db.VarChar
+//   raw_record         Json?    @default("{}") @db.Json
+//   created_at         DateTime @db.Timestamp(6)
+//   updated_at         DateTime @db.Timestamp(6)
+//   booking_id         Int?
+
+//   @@index([booking_id], map: "index_square_refunds_on_booking_id")
+//   @@index([device_id], map: "index_square_refunds_on_device_id")
+//   @@index([location_id], map: "index_square_refunds_on_location_id")
+//   @@index([order_id], map: "index_square_refunds_on_order_id")
+//   @@index([payment_id], map: "index_square_refunds_on_payment_id")
+//   @@index([square_device_id], map: "index_square_refunds_on_square_device_id")
+//   @@index([square_location_id], map: "index_square_refunds_on_square_location_id")
+//   @@index([square_order_id], map: "index_square_refunds_on_square_order_id")
+//   @@index([square_payment_id], map: "index_square_refunds_on_square_payment_id")
+//   @@index([status], map: "index_square_refunds_on_status")
+// }
+
+// 안쓰임(미국사업)
+// model stripe_coupons {
+//   id                  BigInt  @id @default(autoincrement())
+//   coupon_code         String? @unique(map: "index_stripe_coupons_on_coupon_code") @db.VarChar
+//   stripe_coupon_id    String? @unique(map: "index_stripe_coupons_on_stripe_coupon_id") @db.VarChar
+//   ppb_coupon_stamp_id Int?    @unique(map: "index_stripe_coupons_on_ppb_coupon_stamp_id")
+//   raw_record          Json?   @db.Json
+// }
+
+// 안쓰임(미국사업)
+// model stripe_events {
+//   id         BigInt   @id @default(autoincrement())
+//   raw_record Json?    @default("{}") @db.Json
+//   created_at DateTime @db.Timestamp(6)
+//   updated_at DateTime @db.Timestamp(6)
+// }
+
+// 안쓰임(미국사업)
+// model stripe_sessions {
+//   id                     BigInt   @id @default(autoincrement())
+//   stripe_id              String?  @unique(map: "index_stripe_sessions_on_stripe_id") @db.VarChar
+//   status                 String?  @db.VarChar
+//   user_id                Int?
+//   payment_id             Int?
+//   ppb_cart_id            Int?
+//   selected_cart_item_ids Json?    @default("[]") @db.Json
+//   raw_record             Json?    @default("{}") @db.Json
+//   created_at             DateTime @db.Timestamp(6)
+//   updated_at             DateTime @db.Timestamp(6)
+//   app_key                String?  @db.VarChar
+
+//   @@index([app_key], map: "index_stripe_sessions_on_app_key")
+//   @@index([payment_id], map: "index_stripe_sessions_on_payment_id")
+//   @@index([status], map: "index_stripe_sessions_on_status")
+// }
+
+// model subjects {
+//   id          BigInt   @id @default(autoincrement())
+//   project_id  Int?
+//   description String?  @db.VarChar
+//   created_at  DateTime @db.Timestamp(6)
+//   updated_at  DateTime @db.Timestamp(6)
+// }
+
+// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+// model tmp_hapa_jp {
+//   c1 String?
+//   c2 String?
+
+//   @@ignore
+// }
+
+// model tmp_subscribers {
+//   id                BigInt    @id @default(autoincrement())
+//   email             String?   @unique(map: "index_tmp_subscribers_on_email") @db.VarChar
+//   created_at        DateTime  @db.Timestamp(6)
+//   updated_at        DateTime  @db.Timestamp(6)
+//   welcome_issued_at DateTime? @db.Timestamp(6)
+// }
+
+// model tmps {
+//   id    BigInt @id @default(autoincrement())
+//   email String @db.VarChar
+
+//   @@index([email], map: "index_tmps_on_email")
+// }
+
+// model user_favorite_products {
+//   id             BigInt   @id @default(autoincrement())
+//   user_id        BigInt?
+//   ppb_product_id BigInt?
+//   price          String?  @db.VarChar
+//   created_at     DateTime @db.Timestamp(6)
+//   updated_at     DateTime @db.Timestamp(6)
+
+//   @@unique([user_id, ppb_product_id], map: "index_user_favorite_products_on_user_id_and_ppb_product_id")
+//   @@index([ppb_product_id], map: "index_user_favorite_products_on_ppb_product_id")
+//   @@index([user_id], map: "index_user_favorite_products_on_user_id")
+// }
 
 model Users {
   id                           BigInt    @id @default(autoincrement())
@@ -3436,24 +3503,26 @@ model Users {
 
   franchiseOnUser          Manages[]
   coupons                  Coupons[]
+  cards                    Cards[]
+  payments                 Payments[]
 
   @@map("users")
 }
 
-model votes {
-  id           BigInt   @id @default(autoincrement())
-  votable_type String?  @db.VarChar
-  votable_id   BigInt?
-  voter_type   String?  @db.VarChar
-  voter_id     BigInt?
-  vote_flag    Boolean?
-  vote_scope   String?  @db.VarChar
-  vote_weight  Int?
-  created_at   DateTime @db.Timestamp(6)
-  updated_at   DateTime @db.Timestamp(6)
+// model votes {
+//   id           BigInt   @id @default(autoincrement())
+//   votable_type String?  @db.VarChar
+//   votable_id   BigInt?
+//   voter_type   String?  @db.VarChar
+//   voter_id     BigInt?
+//   vote_flag    Boolean?
+//   vote_scope   String?  @db.VarChar
+//   vote_weight  Int?
+//   created_at   DateTime @db.Timestamp(6)
+//   updated_at   DateTime @db.Timestamp(6)
 
-  @@index([votable_id, votable_type, vote_scope], map: "index_votes_on_votable_id_and_votable_type_and_vote_scope")
-  @@index([votable_type, votable_id], map: "index_votes_on_votable_type_and_votable_id")
-  @@index([voter_id, voter_type, vote_scope], map: "index_votes_on_voter_id_and_voter_type_and_vote_scope")
-  @@index([voter_type, voter_id], map: "index_votes_on_voter_type_and_voter_id")
-}
+//   @@index([votable_id, votable_type, vote_scope], map: "index_votes_on_votable_id_and_votable_type_and_vote_scope")
+//   @@index([votable_type, votable_id], map: "index_votes_on_votable_type_and_votable_id")
+//   @@index([voter_id, voter_type, vote_scope], map: "index_votes_on_voter_id_and_voter_type_and_vote_scope")
+//   @@index([voter_type, voter_id], map: "index_votes_on_voter_type_and_voter_id")
+// }

@@ -38,6 +38,7 @@ describe('Purchase fee for settlements', () => {
     prismaInstance.$disconnect();
   });
 
+  // 바로드림 수수료는 판매금액의 0.05
   test('바로드림, 구매예약 전체 금액', async () => {
     // 전체금액 * 0.05
     if (franchiseSettlement) {

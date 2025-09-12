@@ -911,74 +911,86 @@ model ppb_campaigns {
   @@index([app_key], map: "index_ppb_campaigns_on_app_key")
 }
 
-model ppb_cart_items {
-  id                     BigInt   @id @default(autoincrement())
-  ppb_cart_id            BigInt?
-  ppb_product_id         BigInt?
-  ppb_product_variant_id BigInt?
-  quantity               Int?     @default(1)
-  pack_count             Int?
-  price                  Decimal? @db.Decimal(10, 2)
-  created_at             DateTime @db.Timestamp(6)
-  updated_at             DateTime @db.Timestamp(6)
-  has_sub_items          Boolean? @default(false)
-
-  @@index([ppb_cart_id], map: "index_cart_items_cart_id")
-  @@index([ppb_product_id], map: "index_cart_items_product_id")
-  @@index([ppb_product_variant_id], map: "index_cart_items_variant_id")
-}
-
-model ppb_cart_sub_items {
-  id                            BigInt   @id @default(autoincrement())
-  ppb_cart_id                   BigInt?
-  ppb_cart_item_id              BigInt?
-  ppb_product_bundle_package_id BigInt?
-  ppb_product_id                BigInt?
-  ppb_product_variant_id        BigInt?
-  sub_item_type                 String?  @db.VarChar
-  quantity                      Int?     @default(1)
-  pack_count                    Int?
-  created_at                    DateTime @db.Timestamp(6)
-  updated_at                    DateTime @db.Timestamp(6)
-
-  @@index([ppb_cart_id], map: "index_cart_sub_items_cart_id")
-  @@index([ppb_cart_item_id], map: "index_cart_sub_items_cart_item_id")
-  @@index([ppb_product_id], map: "index_cart_sub_items_product_id")
-  @@index([sub_item_type], map: "index_cart_sub_items_sub_item_type")
-  @@index([ppb_product_variant_id], map: "index_cart_sub_items_variant_id")
-}
-
-model ppb_carts {
+model Carts {
   id                   BigInt   @id @default(autoincrement())
-  app_key              String?  @db.VarChar
-  user_id              Int?
-  cart_token           String?  @unique(map: "index_ppb_carts_on_cart_token") @db.VarChar
+  appKey               String?  @map("app_key") @db.VarChar
+  userId               BigInt?  @map("user_id")
+  cartToken            String?  @map("cart_token") @unique(map: "index_ppb_carts_on_cart_token") @db.VarChar
   status               String?  @db.VarChar(32)
   items                Json?    @default("{}") @db.Json
   note                 String?
-  created_at           DateTime @db.Timestamp(6)
-  updated_at           DateTime @db.Timestamp(6)
-  ppb_franchise_id     Int?
-  ppb_coupon_id        Int?
-  order_discount_price Decimal? @default(0.0) @db.Decimal
+  createdAt            DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt            DateTime @map("updated_at") @db.Timestamp(6)
+  franchiseId          BigInt?  @map("ppb_franchise_id")
+  couponId             BigInt?  @map("ppb_coupon_id")
+  orderDiscountPrice   Decimal? @map("order_discount_price") @default(0.0) @db.Decimal
   currency             String?  @default("krw") @db.VarChar
 
-  @@index([app_key], map: "index_ppb_carts_on_app_key")
+  @@index([appKey], map: "index_ppb_carts_on_app_key")
   @@index([status], map: "index_ppb_carts_on_status")
-  @@index([user_id], map: "index_ppb_carts_on_user_id")
+  @@index([userId], map: "index_ppb_carts_on_user_id")
+
+  user                 Users? @relation(fields: [userId], references: [id])
+  franchise            Franchise? @relation(fields: [franchiseId], references: [id])
+  coupon               Coupons? @relation(fields: [couponId], references: [id])
+
+  cartItems            CartItems[]
+  cartSubItems         CartSubItems[]
+
+  @@map("ppb_carts")
 }
 
-model ppb_collection_relations {
-  id         BigInt   @id @default(autoincrement())
-  parent_id  BigInt
-  child_id   BigInt
-  created_at DateTime @db.Timestamp(6)
-  updated_at DateTime @db.Timestamp(6)
-  position   Int?     @default(0)
+model CartItems {
+  id                     BigInt   @id @default(autoincrement())
+  cartId                 BigInt?  @map("ppb_cart_id")
+  productId              BigInt?  @map("ppb_product_id")
+  productVariantId       BigInt?  @map("ppb_product_variant_id")
+  quantity               Int?     @default(1)
+  packCount              Int?     @map("pack_count")
+  price                  Decimal? @db.Decimal(10, 2)
+  createdAt              DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt              DateTime @map("updated_at") @db.Timestamp(6)
+  hasSubItems            Boolean? @map("has_sub_items") @default(false)
 
-  @@unique([parent_id, child_id], map: "index_ppb_collection_relations_on_parent_id_and_child_id")
-  @@index([child_id], map: "index_ppb_collection_relations_on_child_id")
-  @@index([parent_id], map: "index_ppb_collection_relations_on_parent_id")
+  @@index([cartId], map: "index_cart_items_cart_id")
+  @@index([productId], map: "index_cart_items_product_id")
+  @@index([productVariantId], map: "index_cart_items_variant_id")
+
+  cart                 Carts? @relation(fields: [cartId], references: [id])
+  product              Products? @relation(fields: [productId], references: [id])
+  productVariant       ProductVariants? @relation(fields: [productVariantId], references: [id])
+
+  cartSubItems         CartSubItems[]
+
+  @@map("ppb_cart_items")
+}
+
+model CartSubItems {
+  id                            BigInt   @id @default(autoincrement())
+  cartId                        BigInt?  @map("ppb_cart_id")
+  productId                     BigInt?  @map("ppb_product_id")
+  productVariantId              BigInt?  @map("ppb_product_variant_id")
+
+  cartItemId                    BigInt?  @map("ppb_cart_item_id")
+  productBundlePackageId        BigInt?  @map("ppb_product_bundle_package_id")
+  subItemType                   String?  @map("sub_item_type") @db.VarChar
+  quantity                      Int?     @default(1)
+  packCount                     Int?     @map("pack_count")
+  createdAt                     DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt                     DateTime @map("updated_at") @db.Timestamp(6)
+
+  @@index([cartId], map: "index_cart_sub_items_cart_id")
+  @@index([cartItemId], map: "index_cart_sub_items_cart_item_id")
+  @@index([productId], map: "index_cart_sub_items_product_id")
+  @@index([subItemType], map: "index_cart_sub_items_sub_item_type")
+  @@index([productVariantId], map: "index_cart_sub_items_variant_id")
+
+  cart                 Carts? @relation(fields: [cartId], references: [id])
+  cartItem             CartItems? @relation(fields: [cartItemId], references: [id])
+  product              Products? @relation(fields: [productId], references: [id])
+  productVariant       ProductVariants? @relation(fields: [productVariantId], references: [id])
+
+  @@map("ppb_cart_sub_items")
 }
 
 model Collections {
@@ -1014,7 +1026,7 @@ model Collects {
 
   productId     BigInt?  @map("product_id")
   collectionId  BigInt?  @map("collection_id")
-  
+
   position      Int?     @map("position")
   sortValue     String?  @map("sort_value") @db.VarChar
   createdAt     DateTime @map("created_at") @db.Timestamp(6)
@@ -1027,6 +1039,20 @@ model Collects {
   collection    Collections? @relation(fields: [collectionId], references: [id])
 
   @@map("ppb_collects")
+}
+
+// 이놈은 뭐지
+model ppb_collection_relations {
+  id         BigInt   @id @default(autoincrement())
+  parent_id  BigInt
+  child_id   BigInt
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+  position   Int?     @default(0)
+
+  @@unique([parent_id, child_id], map: "index_ppb_collection_relations_on_parent_id_and_child_id")
+  @@index([child_id], map: "index_ppb_collection_relations_on_child_id")
+  @@index([parent_id], map: "index_ppb_collection_relations_on_parent_id")
 }
 
 model Coupons {
@@ -1066,7 +1092,9 @@ model Coupons {
   brand         Brands? @relation(fields: [brandId], references: [id])
   franchis      Franchise? @relation(fields: [franchiseId], references: [id])
   couponStamp   CouponStamps? @relation(fields: [couponStampId], references: [id])
+
   orderItems    OrderItems[]
+  carts         Carts[]
 
   @@map("ppb_coupons")
 }
@@ -1534,6 +1562,7 @@ model Franchise {
   coupons                  Coupons[]
   PpbFranchiseCouponStamps FranchiseCouponStamps[]
   franchiseOnUser          Manages[]
+  carts                    Carts[]
 
   @@map("ppb_franchises")
 }
@@ -2200,6 +2229,8 @@ model Products {
   coupons                     Coupons[]
   orderItems                  OrderItems[]
   orderSubItems               OrderSubItems[]
+  cartItems                   CartItems[]
+  cartSubItems                CartSubItems[]
 
   @@map("ppb_products")
 }
@@ -2232,6 +2263,8 @@ model ProductVariants {
   productVariantPrices              ProductVariantPrices[]
   orderItems                        OrderItems[]
   orderSubItems                     OrderSubItems[]
+  cartItems                         CartItems[]
+  cartSubItems                      CartSubItems[]
 
   @@map("ppb_product_variants")
 }
@@ -3505,6 +3538,7 @@ model Users {
   coupons                  Coupons[]
   cards                    Cards[]
   payments                 Payments[]
+  carts                    Carts[]
 
   @@map("users")
 }

@@ -2,16 +2,15 @@
   "name": "@ppb/orm",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.cjs"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
     },
     "./generated/ppb": {
       "types": "./generated/ppb/index.d.ts",
@@ -20,8 +19,14 @@
   },
   "scripts": {
     "test": "jest",
+    "copy-generated:esm": "cp -r src/generated dist/esm/",
+    "copy-generated:cjs": "cp -r src/generated dist/cjs/",
+    "build:cjs": "tsc -p tsconfig.cjs.json && pnpm run copy-generated:cjs",
+    "build:esm": "tsc -p tsconfig.esm.json && pnpm run copy-generated:esm",
+    "build": "rm -rf dist && pnpm db:generate && pnpm run build:cjs && pnpm run build:esm",
     "db:pull:ppb": "prisma db pull --schema=prisma/ppb/schema.prisma",
-    "db:generate:ppb": "prisma generate --schema=prisma/ppb/schema.prisma"
+    "db:generate:ppb": "prisma generate --schema=prisma/ppb/schema.prisma",
+    "db:generate": "pnpm run db:generate:ppb"
   },
   "keywords": ["ppb", "orm"],
   "files": ["dist", "generated"],

@@ -26,8 +26,8 @@ export function getDatabaseUrl({
   return `${database}://${username}:${password}@${host}:${port}/${databaseName}?schema=${schema}`;
 }
 
-export function getPrismaClient(): PrismaPpbClientWrapper {
-  const ormService = OrmServiceSingleton.getInstance();
+export function getPpbPrismaClient(dbOptions?: DatabaseOptions): PrismaPpbClientWrapper {
+  const ormService = OrmServiceSingleton.getInstance(dbOptions);
   const prisma = ormService.getPrismaClient();
   return prisma;
 }
@@ -35,10 +35,16 @@ export function getPrismaClient(): PrismaPpbClientWrapper {
 export class OrmServiceSingleton {
   private static instance: PpbOrmInitService | null = null;
   
-  public static getInstance(): PpbOrmInitService {
+  public static getInstance(dbOptions?: DatabaseOptions): PpbOrmInitService {
     if (!OrmServiceSingleton.instance) {
-      const databaseInfo = getPpbSetupDataInfo();
-      const databaseUrl = getDatabaseUrl(databaseInfo);
+      let databaseUrl = '';
+      if (dbOptions) {
+        databaseUrl = getDatabaseUrl(dbOptions);
+      } else {
+        const databaseInfo = getPpbSetupDataInfo();
+        databaseUrl = getDatabaseUrl(databaseInfo);
+      }
+      
       OrmServiceSingleton.instance = new PpbOrmInitService(databaseUrl, ['info']);
     }
     

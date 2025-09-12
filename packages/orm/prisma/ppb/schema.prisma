@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../generated/ppb"
+  output   = "../../src/generated/ppb"
 }
 
 datasource db {
@@ -1414,33 +1414,37 @@ model FranchiseCouponStamps {
 //   @@index([status], map: "index_ppb_franchise_requests_on_status")
 // }
 
-model ppb_franchise_settlements {
+model FranchiseSettlements {
   id                                 BigInt   @id @default(autoincrement())
   year                               Int
   month                              Int
-  ppb_franchise_id                   Int
-  shipment_amount                    Decimal? @default(0.0) @db.Decimal
-  shipment_canceled_amount           Decimal? @default(0.0) @db.Decimal
-  shipment_total_amount              Decimal? @default(0.0) @db.Decimal
-  pickup_amount                      Decimal? @default(0.0) @db.Decimal
-  pickup_canceled_amount             Decimal? @default(0.0) @db.Decimal
-  pickup_total_amount                Decimal? @default(0.0) @db.Decimal
-  support_fund_amount                Decimal? @default(0.0) @db.Decimal
-  support_fund_canceled_amount       Decimal? @default(0.0) @db.Decimal
-  support_fund_total_amount          Decimal? @default(0.0) @db.Decimal
-  support_fund_stock_amount          Decimal? @default(0.0) @db.Decimal
-  support_fund_stock_canceled_amount Decimal? @default(0.0) @db.Decimal
-  support_fund_stock_total_amount    Decimal? @default(0.0) @db.Decimal
-  stock_fee_amount                   Decimal? @default(0.0) @db.Decimal
-  stock_fee_canceled_amount          Decimal? @default(0.0) @db.Decimal
-  stock_fee_total_amount             Decimal? @default(0.0) @db.Decimal
-  total_amount                       Decimal? @default(0.0) @db.Decimal
-  created_at                         DateTime @db.Timestamp(6)
-  updated_at                         DateTime @db.Timestamp(6)
-  shipment_returned_amount           Decimal? @default(0.0) @db.Decimal
-  pickup_returned_amount             Decimal? @default(0.0) @db.Decimal
+  franchiseId                        BigInt   @map("ppb_franchise_id")
+  shipmentAmount                     Decimal? @map("shipment_amount") @default(0.0) @db.Decimal
+  shipmentCanceledAmount             Decimal? @map("shipment_canceled_amount") @default(0.0) @db.Decimal
+  shipmentTotalAmount                Decimal? @map("shipment_total_amount") @default(0.0) @db.Decimal
+  pickupAmount                       Decimal? @map("pickup_amount") @default(0.0) @db.Decimal
+  pickupCanceledAmount               Decimal? @map("pickup_canceled_amount") @default(0.0) @db.Decimal
+  pickupTotalAmount                  Decimal? @map("pickup_total_amount") @default(0.0) @db.Decimal
+  supportFundAmount                  Decimal? @map("support_fund_amount") @default(0.0) @db.Decimal
+  supportFundCanceledAmount          Decimal? @map("support_fund_canceled_amount") @default(0.0) @db.Decimal
+  supportFundTotalAmount             Decimal? @map("support_fund_total_amount") @default(0.0) @db.Decimal
+  supportFundStockAmount             Decimal? @map("support_fund_stock_amount") @default(0.0) @db.Decimal
+  supportFundStockCanceledAmount     Decimal? @map("support_fund_stock_canceled_amount") @default(0.0) @db.Decimal
+  supportFundStockTotalAmount        Decimal? @map("support_fund_stock_total_amount") @default(0.0) @db.Decimal
+  stockFeeAmount                     Decimal? @map("stock_fee_amount") @default(0.0) @db.Decimal
+  stockFeeCanceledAmount             Decimal? @map("stock_fee_canceled_amount") @default(0.0) @db.Decimal
+  stockFeeTotalAmount                Decimal? @map("stock_fee_total_amount") @default(0.0) @db.Decimal
+  totalAmount                        Decimal? @map("total_amount") @default(0.0) @db.Decimal
+  createdAt                          DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt                          DateTime @map("updated_at") @db.Timestamp(6)
+  shipmentReturnedAmount             Decimal? @map("shipment_returned_amount") @default(0.0) @db.Decimal
+  pickupReturnedAmount               Decimal? @map("pickup_returned_amount") @default(0.0) @db.Decimal
 
-  @@unique([year, month, ppb_franchise_id], map: "index_franchise_settlements_year_and_month_and_ppb_franchise_id")
+  @@unique([year, month, franchiseId], map: "index_franchise_settlements_year_and_month_and_ppb_franchise_id")
+
+  franchise                          Franchise   @relation(fields: [franchiseId], references: [id])
+
+  @@map("ppb_franchise_settlements")
 }
 
 model Franchise {
@@ -1563,6 +1567,7 @@ model Franchise {
   PpbFranchiseCouponStamps FranchiseCouponStamps[]
   franchiseOnUser          Manages[]
   carts                    Carts[]
+  franchiseSettlements     FranchiseSettlements[]
 
   @@map("ppb_franchises")
 }

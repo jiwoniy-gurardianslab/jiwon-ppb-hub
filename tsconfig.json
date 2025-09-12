@@ -8,6 +8,7 @@
 {
   "files": [],
   "references": [
+    { "path": "./apps/sample" },
     { "path": "./packages/config" },
     { "path": "./packages/orm" }
   ]

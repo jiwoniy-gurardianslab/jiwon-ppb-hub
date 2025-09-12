@@ -6,7 +6,7 @@ import { PrismaPpbClientWrapper as PrismaPpbClient } from '../../wrapper';
 import { SuccessResponse, ErrorResponse } from '../../types';
 // import { DefaultTake, DefaultPerPage } from '../../constants';
 
-export default class PpbBrand {
+export default class DBBrands {
   constructor(private prisma: PrismaPpbClient) {}
 
   async findList(): Promise<SuccessResponse<any> | ErrorResponse> {

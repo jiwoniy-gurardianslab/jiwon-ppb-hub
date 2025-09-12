@@ -1,1 +1,1 @@
-export { default as PpbBrand } from './class';
+export { default as DBBrands } from './class';

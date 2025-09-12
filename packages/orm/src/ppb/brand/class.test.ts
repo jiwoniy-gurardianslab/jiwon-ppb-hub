@@ -1,9 +1,9 @@
-import { getPrismaClient } from '../../config';
+import { getPpbPrismaClient } from '../../config';
 // import { DBError, DBErrorCode } from '../../error';
 import BrandClass from './class';
 
 describe('Table: ppb_brands', () => {
-  const prismaInstance = getPrismaClient();
+  const prismaInstance = getPpbPrismaClient();
   let brandClass: BrandClass | null = null;
 
   beforeAll(async () => {

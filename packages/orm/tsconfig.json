@@ -2,15 +2,19 @@
   "extends": "../config/dist/ts-config/shared.json",
   "compilerOptions": {
     "composite": true,
+    "target": "ES2020",
     "rootDir": "./src",
-    "outDir": "./dist",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    // "generated/**/*",  // generated 파일 포함 -> 빌드 후 구조를 맞추기 위해서
+    // 소스 구조: packages/orm/src/wrapper.ts → packages/orm/generated/ppb
+    // 빌드 후 구조: packages/orm/dist/cjs/wrapper.js → packages/orm/generated/ppb
+  ],
   "exclude": [
     "node_modules",
     "dist",
-    "generated/**/*",  // generated 파일들 제외
     "**/*.test.ts",
     "**/*.spec.ts",
   ]

@@ -1,7 +1,7 @@
 import {
   Prisma as PpbPrisma,
   PrismaClient as PpbPrismaClient
-} from '../generated/ppb';
+} from './generated/ppb';
 
 import { SuccessResponse, ErrorResponse } from './types';
 import { handlePrismaError } from './error';
@@ -16,6 +16,29 @@ export class PrismaPpbClientWrapper extends PpbPrismaClient {
   // @ts-ignore: prisma is kept for future use
   constructor(private prisma: PpbPrismaClient) {
     super();
+  }
+
+  async connect() {
+    try {
+      // https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections
+      await this.prisma.$connect();
+      console.log(`PpbPrismaClient connect success`);
+    } catch (error: unknown) {
+      if (error instanceof PpbPrisma.PrismaClientInitializationError) {
+        console.error(`PpbPrismaClient connect error: ${error.message}`);
+      }
+    }
+  }
+
+  async disconnect() {
+    try {
+      await this.prisma.$disconnect();
+      console.log(`PpbPrismaClient disconnect success`);
+    } catch (error: unknown) {
+      if (error instanceof PpbPrisma.PrismaClientInitializationError) {
+        console.error(`PpbPrismaClient disconnect error: ${error.message}`);
+      }
+    }
   }
 
   /**

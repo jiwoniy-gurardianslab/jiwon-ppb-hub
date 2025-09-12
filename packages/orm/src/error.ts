@@ -8,7 +8,7 @@ export type DBErrorCode =
   | 'DB_NO_PERMISSION' ;
 
 
-import { Prisma as PrismaPpb } from '../generated/ppb';
+import { Prisma as PrismaPpb } from './generated/ppb';
 
 export const DBErrorCode: Record<DBErrorCode, DBErrorCode> = {
   /* Unknown */

@@ -1,7 +1,8 @@
 // export { PpbSale, PpbBatchSale, PpbAlertSale } from './sale';
 // export { PpbOrder } from './order';
 
-export { PpbBrand } from './brand';
+export { DBBrands } from './brand';
+export { BizFranchiseSettlement } from './franchise-settlement';
 // export { PpbImage } from './image';
 // export { PpbCouponStamp } from './coupon-stamp';
 // export { PpbFranchise, PpbFranchiseRegion, PpbBatchFranchise } from './franchise';

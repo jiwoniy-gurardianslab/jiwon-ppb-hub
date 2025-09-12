@@ -18,11 +18,11 @@ export class PpbOrmInitService implements OnModuleInit, OnModuleDestroy {
     // this.logger.log(`[constructor]: ${databaseUrl}`);
     this.ppbClient = getPpbPrismaClient({
       database: 'postgresql',
-      username: 'guardians',
-      password: '1q2w3e$R',
-      host: 'ppb-development-cluster.cluster-cohpkveydrp3.ap-northeast-2.rds.amazonaws.com',
+      username: 'hello',
+      password: 'hello',
+      host: 'localhost',
       port: '5432',
-      databaseName: 'ppb-development',
+      databaseName: 'database',
       schema: 'public',
     });
   }

@@ -7,7 +7,7 @@ import type { SuccessResponse, ErrorResponse } from '../../types';
 import type { DTO } from './dto';
 // import { HeadOfficeFranchiseId } from './constants';
 
-const StockSelectOption = {
+const BaseSelectOption = {
   id: true,
   sku: true,
   available: true,
@@ -22,7 +22,7 @@ const StockSelectOption = {
 } as const satisfies PrismaPpb.StocksSelect;
 
 type StockSelectBase = PrismaPpb.StocksGetPayload<{
-  select: typeof StockSelectOption;
+  select: typeof BaseSelectOption;
 }>;
 
 export default class DBStocks {
@@ -44,7 +44,7 @@ export default class DBStocks {
         sku,
         franchiseId: BigInt(franchiseId),
       },
-      select: StockSelectOption,
+      select: BaseSelectOption,
     }));
 
     if (success) {
@@ -62,7 +62,7 @@ export default class DBStocks {
     }
   }
 
-  async create(inputData: Partial<DTO['CreateInput']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+  async create(inputData: Partial<DTO['Create']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
     const input: PrismaPpb.StocksCreateInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -88,7 +88,54 @@ export default class DBStocks {
     const { success, data, error } = await this.prisma.executeWrapper(() =>
       this.prisma.stocks.create({
         data: input,
-        select: StockSelectOption,
+        select: BaseSelectOption,
+      })
+    );
+
+    if (success) {
+      return {
+        success,
+        data: this.transformEntity(data)
+      }
+    }
+
+    return {
+      success,
+      error,
+    }
+  }
+
+  async update(id: string, inputData: Partial<DTO['Update']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+    const input: PrismaPpb.StocksUpdateInput = {
+      updatedAt: new Date(),
+    }
+
+    if (isDefined(inputData.barcode)) {
+      input.barcode = inputData.barcode;
+    }
+    if (isDefined(inputData.available)) {
+      input.available = inputData.available;
+    }
+    if (isDefined(inputData.lastAdjustedAt)) {
+      input.lastAdjustedAt = inputData.lastAdjustedAt;
+    }
+    if (isDefined(inputData.outOfStock)) {
+      input.outOfStock = inputData.outOfStock;
+    }
+    if (isDefined(inputData.outOfStockedAt)) {
+      input.outOfStockedAt = inputData.outOfStockedAt;
+    }
+    if (isDefined(inputData.averagePrice)) {
+      input.averagePrice = inputData.averagePrice;
+    }
+
+    const { success, data, error } = await this.prisma.executeWrapper(() =>
+      this.prisma.stocks.update({
+        where: {
+          id: BigInt(id),
+        },
+        data: input,
+        select: BaseSelectOption,
       })
     );
 

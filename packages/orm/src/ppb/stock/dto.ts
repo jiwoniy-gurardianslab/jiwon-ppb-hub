@@ -17,15 +17,18 @@ export type DTO = {
     outOfStockedAt: Date | null;
     averagePrice: string | null;
   },
-  CreateInput: {
+  Create: {
     franchiseId: string;
     sku: string;
     barcode: string;
     available: number;
   },
-  // UpdateInput: {
-  //   processingStatus: OkposProcessingStatus;
-  //   orderId: string;
-  //   updatedAt: Date;
-  // }
+  Update: {
+    barcode: string;
+    available: number;
+    lastAdjustedAt: Date;
+    outOfStock: boolean;
+    outOfStockedAt: Date;
+    averagePrice: string;
+  }
 }

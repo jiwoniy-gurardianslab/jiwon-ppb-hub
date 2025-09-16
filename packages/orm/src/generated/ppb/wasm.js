@@ -388,81 +388,64 @@ exports.Prisma.ManagesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.Membership_historiesScalarFieldEnum = {
+exports.Prisma.MembershipHistoriesScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
-  historyable_type: 'historyable_type',
-  historyable_id: 'historyable_id',
-  event_type: 'event_type',
-  membership_uid: 'membership_uid',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  userId: 'userId',
+  historyableType: 'historyableType',
+  historyableId: 'historyableId',
+  eventType: 'eventType',
+  membershipUid: 'membershipUid',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   amount: 'amount',
-  access_key: 'access_key',
-  rule_code: 'rule_code'
+  accessKey: 'accessKey',
+  rulecode: 'rulecode'
 };
 
-exports.Prisma.Membership_rule_setsScalarFieldEnum = {
+exports.Prisma.MembershipRuleSetsScalarFieldEnum = {
   id: 'id',
-  app_key: 'app_key',
-  channel_type: 'channel_type',
-  rule_type: 'rule_type',
-  rule_description: 'rule_description',
-  rule_code: 'rule_code',
-  value_type: 'value_type',
+  appKey: 'appKey',
+  channelType: 'channelType',
+  ruleType: 'ruleType',
+  ruleDescription: 'ruleDescription',
+  ruleCode: 'ruleCode',
+  valueType: 'valueType',
   value: 'value',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   status: 'status',
-  expire_days: 'expire_days',
-  ready_days: 'ready_days'
+  expireDays: 'expireDays',
+  readyDays: 'readyDays'
 };
 
 exports.Prisma.MessagesScalarFieldEnum = {
   id: 'id',
-  shopify_order_id: 'shopify_order_id',
-  alimtalk_id: 'alimtalk_id',
+  shopifyOrderId: 'shopifyOrderId',
+  alimtalkId: 'alimtalkId',
   status: 'status',
   data: 'data',
-  full_string: 'full_string',
-  message_type: 'message_type',
-  request_result: 'request_result',
-  sending_result: 'sending_result',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  fullString: 'fullString',
+  messageType: 'messageType',
+  requestResult: 'requestResult',
+  sendingResult: 'sendingResult',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   phone: 'phone',
-  ppb_order_id: 'ppb_order_id',
-  ppb_code: 'ppb_code',
-  template_code: 'template_code',
-  user_id: 'user_id',
-  push_type: 'push_type',
-  push_data: 'push_data',
-  messageable_type: 'messageable_type',
-  messageable_id: 'messageable_id',
-  opened_at: 'opened_at',
+  orderId: 'orderId',
+  ppbCode: 'ppbCode',
+  templateCode: 'templateCode',
+  userId: 'userId',
+  pushType: 'pushType',
+  pushData: 'pushData',
+  messageableType: 'messageableType',
+  messageableId: 'messageableId',
+  openedAt: 'openedAt',
   email: 'email'
-};
-
-exports.Prisma.NbteyesScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  title: 'title',
-  description: 'description',
-  description_offline: 'description_offline',
-  celebs: 'celebs',
-  col1: 'col1',
-  col2: 'col2',
-  col3: 'col3',
-  col4: 'col4',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  sub_title: 'sub_title',
-  app_key: 'app_key'
 };
 
 exports.Prisma.OkposLogsScalarFieldEnum = {
   id: 'id',
-  order_no: 'order_no',
+  orderNo: 'orderNo',
   raw: 'raw',
   logType: 'logType',
   processingStatus: 'processingStatus',
@@ -1156,14 +1139,14 @@ exports.Prisma.StocksScalarFieldEnum = {
   id: 'id',
   sku: 'sku',
   available: 'available',
-  last_adjusted_at: 'last_adjusted_at',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  lastAdjustedAt: 'lastAdjustedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   barcode: 'barcode',
-  franchise_id: 'franchise_id',
-  out_of_stock: 'out_of_stock',
-  out_of_stocked_at: 'out_of_stocked_at',
-  average_price: 'average_price'
+  franchiseId: 'franchiseId',
+  outOfStock: 'outOfStock',
+  outOfStockedAt: 'outOfStockedAt',
+  averagePrice: 'averagePrice'
 };
 
 exports.Prisma.StockHistoriesScalarFieldEnum = {
@@ -1332,10 +1315,9 @@ exports.Prisma.ModelName = {
   kcpbatch: 'kcpbatch',
   locales: 'locales',
   Manages: 'Manages',
-  membership_histories: 'membership_histories',
-  membership_rule_sets: 'membership_rule_sets',
-  messages: 'messages',
-  nbteyes: 'nbteyes',
+  MembershipHistories: 'MembershipHistories',
+  MembershipRuleSets: 'MembershipRuleSets',
+  Messages: 'Messages',
   OkposLogs: 'OkposLogs',
   Cards: 'Cards',
   Payments: 'Payments',

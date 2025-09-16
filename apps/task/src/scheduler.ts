@@ -3,8 +3,9 @@
 // ====================================
 // scheduler.ts
 import { NestFactory } from '@nestjs/core';
-import { BatchModule } from './batch.module';
 import { Logger } from '@nestjs/common';
+
+import { BatchModule } from './batch.module';
 
 async function bootstrap() {
   const logger = new Logger('Scheduler');

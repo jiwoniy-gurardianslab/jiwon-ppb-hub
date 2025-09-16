@@ -557,107 +557,115 @@ model Manages {
   @@map("manages")
 }
 
-model membership_histories {
-  id               BigInt   @id @default(autoincrement())
-  user_id          Int?
-  historyable_type String   @db.VarChar
-  historyable_id   BigInt
-  event_type       String?  @db.VarChar
-  membership_uid   String?  @db.VarChar
-  created_at       DateTime @db.Timestamp(6)
-  updated_at       DateTime @db.Timestamp(6)
-  amount           Int?
-  access_key       String?  @db.VarChar
-  rule_code        String?  @db.VarChar
+model MembershipHistories {
+  id              BigInt   @id @default(autoincrement())
+  userId          Int?     @map("user_id")
+  historyableType String   @map("historyable_type") @db.VarChar
+  historyableId   BigInt   @map("historyable_id")
+  eventType       String?  @map("event_type") @db.VarChar
+  membershipUid   String?  @map("membership_uid") @db.VarChar
+  createdAt       DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime @map("updated_at") @db.Timestamp(6)
+  amount          Int?
+  accessKey       String?  @map("access_key") @db.VarChar
+  rulecode        String?  @map("rule_code") @db.VarChar
 
-  @@index([access_key], map: "index_membership_histories_on_access_key")
-  @@index([historyable_type, historyable_id], map: "index_membership_histories_on_historyable")
+  @@index([accessKey], map: "index_membership_histories_on_access_key")
+  @@index([historyableType, historyableId], map: "index_membership_histories_on_historyable")
+  // TODO relation
+  @@map("membership_histories")
 }
 
-model membership_rule_sets {
-  id               BigInt   @id @default(autoincrement())
-  app_key          String?  @db.VarChar
-  channel_type     String?  @db.VarChar
-  rule_type        String?  @db.VarChar
-  rule_description String?
-  rule_code        String?  @db.VarChar
-  value_type       String?  @db.VarChar
-  value            Int?
-  created_at       DateTime @db.Timestamp(6)
-  updated_at       DateTime @db.Timestamp(6)
-  status           String   @default("inactive") @db.VarChar
-  expire_days      Int      @default(30)
-  ready_days       Int      @default(0)
+model MembershipRuleSets {
+  id              BigInt   @id @default(autoincrement())
+  appKey          String?  @map("app_key") @db.VarChar
+  channelType     String?  @map("channel_type") @db.VarChar
+  ruleType        String?  @map("rule_type") @db.VarChar
+  ruleDescription String?  @map("rule_description")
+  ruleCode        String?  @map("rule_code") @db.VarChar
+  valueType       String?  @map("value_type") @db.VarChar
+  value           Int?
+  createdAt       DateTime @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime @map("updated_at") @db.Timestamp(6)
+  status          String   @default("inactive") @db.VarChar
+  expireDays      Int      @default(30) @map("expire_days")
+  readyDays       Int      @default(0) @map("ready_days")
 
-  @@unique([app_key, rule_code], map: "index_membership_rule_sets_on_app_key_and_rule_code")
-  @@index([app_key], map: "index_membership_rule_sets_on_app_key")
-  @@index([rule_code], map: "index_membership_rule_sets_on_rule_code")
+  @@unique([appKey, ruleCode], map: "index_membership_rule_sets_on_app_key_and_rule_code")
+  @@index([appKey], map: "index_membership_rule_sets_on_app_key")
+  @@index([ruleCode], map: "index_membership_rule_sets_on_rule_code")
   @@index([status], map: "index_membership_rule_sets_on_status")
+  // TODO relation
+  @@map("membership_rule_sets")
 }
 
-model messages {
-  id               BigInt    @id @default(autoincrement())
-  shopify_order_id Int?
-  alimtalk_id      Int?
-  status           String?   @default("ready") @db.VarChar(32)
-  data             Json?     @db.Json
-  full_string      String?
-  message_type     String?   @db.VarChar(8)
-  request_result   Json?     @db.Json
-  sending_result   Json?     @db.Json
-  created_at       DateTime  @db.Timestamp(6)
-  updated_at       DateTime  @db.Timestamp(6)
-  phone            String?   @db.VarChar
-  ppb_order_id     Int?
-  ppb_code         String?   @db.VarChar(32)
-  template_code    String?   @db.VarChar(32)
-  user_id          Int?
-  push_type        String?   @db.VarChar
-  push_data        Json?     @db.Json
-  messageable_type String?   @db.VarChar
-  messageable_id   BigInt?
-  opened_at        DateTime? @db.Timestamp(6)
-  email            String?   @db.VarChar
+model Messages {
+  id              BigInt    @id @default(autoincrement())
+  shopifyOrderId  Int?      @map("shopify_order_id")
+  alimtalkId      Int?      @map("alimtalk_id")
+  status          String?   @default("ready") @db.VarChar(32)
+  data            Json?     @db.Json
+  fullString      String?   @map("full_string")
+  messageType     String?   @map("message_type") @db.VarChar(8)
+  requestResult   Json?     @map("request_result") @db.Json
+  sendingResult   Json?     @map("sending_result") @db.Json
+  createdAt       DateTime  @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime  @map("updated_at") @db.Timestamp(6)
+  phone           String?   @db.VarChar
+  orderId         BigInt?   @map("ppb_order_id")
+  ppbCode         String?   @map("ppb_code") @db.VarChar(32)
+  templateCode    String?   @map("template_code") @db.VarChar(32)
+  userId          Int?      @map("user_id")
+  pushType        String?   @map("push_type") @db.VarChar
+  pushData        Json?     @map("push_data") @db.Json
+  messageableType String?   @map("messageable_type") @db.VarChar
+  messageableId   BigInt?   @map("messageable_id")
+  openedAt        DateTime? @map("opened_at") @db.Timestamp(6)
+  email           String?   @db.VarChar
 
-  @@index([messageable_type, messageable_id], map: "index_messages_on_messageable_type_and_messageable_id")
-  @@index([ppb_code], map: "index_messages_on_ppb_code")
-  @@index([ppb_order_id], map: "index_messages_on_ppb_order_id")
-  @@index([shopify_order_id], map: "index_messages_on_shopify_order_id")
+  @@index([messageableType, messageableId], map: "index_messages_on_messageable_type_and_messageable_id")
+  @@index([ppbCode], map: "index_messages_on_ppb_code")
+  @@index([orderId], map: "index_messages_on_ppb_order_id")
+  @@index([shopifyOrderId], map: "index_messages_on_shopify_order_id")
   @@index([status], map: "index_messages_on_status")
-  @@index([template_code], map: "index_messages_on_template_code")
-  @@index([user_id], map: "index_messages_on_user_id")
+  @@index([templateCode], map: "index_messages_on_template_code")
+  @@index([userId], map: "index_messages_on_user_id")
+  // TODO relation
+  @@map("messages")
 }
 
-model nbteyes {
-  id                  BigInt   @id @default(autoincrement())
-  code                String   @db.VarChar
-  title               String?  @db.VarChar
-  description         String?
-  description_offline String?
-  celebs              String?
-  col1                String   @db.VarChar(8)
-  col2                String   @db.VarChar(8)
-  col3                String   @db.VarChar(8)
-  col4                String   @db.VarChar(8)
-  created_at          DateTime @db.Timestamp(6)
-  updated_at          DateTime @db.Timestamp(6)
-  sub_title           String?
-  app_key             String?  @db.VarChar
+// model nbteyes {
+//   id                  BigInt   @id @default(autoincrement())
+//   code                String   @db.VarChar
+//   title               String?  @db.VarChar
+//   description         String?
+//   description_offline String?
+//   celebs              String?
+//   col1                String   @db.VarChar(8)
+//   col2                String   @db.VarChar(8)
+//   col3                String   @db.VarChar(8)
+//   col4                String   @db.VarChar(8)
+//   created_at          DateTime @db.Timestamp(6)
+//   updated_at          DateTime @db.Timestamp(6)
+//   sub_title           String?
+//   app_key             String?  @db.VarChar
 
-  @@unique([code, app_key], map: "index_nbteyes_on_code_and_app_key")
-  @@index([app_key], map: "index_nbteyes_on_app_key")
-}
+//   @@unique([code, app_key], map: "index_nbteyes_on_code_and_app_key")
+//   @@index([app_key], map: "index_nbteyes_on_app_key")
+// }
 
 model OkposLogs {
   id               BigInt   @id @default(autoincrement())
-  order_no         String?  @map("transaction_type") @db.VarChar
+  orderNo          String?  @map("transaction_type") @db.VarChar
   raw              Json?    @db.Json
   logType          String?  @map("log_type") @db.VarChar
   processingStatus String?  @map("processing_status") @db.VarChar
-  orderId          Int?     @map("ppb_order_id")
+  orderId          BigInt?  @map("ppb_order_id")
   createdAt        DateTime @map("created_at") @db.Timestamp(6)
   updatedAt        DateTime @map("updated_at") @db.Timestamp(6)
   responseBody     Json?    @map("response_body") @db.Json
+
+  order Orders? @relation(fields: [orderId], references: [id])
 
   @@index([logType], map: "index_okpos_logs_on_log_type")
   @@index([orderId], map: "index_okpos_logs_on_ppb_order_id")
@@ -1544,6 +1552,7 @@ model Franchise {
   franchiseOnUser          Manages[]
   carts                    Carts[]
   franchiseSettlements     FranchiseSettlements[]
+  stocks                   Stocks[]
 
   @@index([exposed], map: "index_ppb_franchises_on_exposed")
   @@index([franchiseKind], map: "index_ppb_franchises_on_franchise_kind")
@@ -1867,6 +1876,7 @@ model Orders {
   orderSubItems OrderSubItems[]
   coupons       Coupons[]
   payments      Payments[]
+  okposlogs     OkposLogs[]
 
   @@index([appKey], map: "index_ppb_orders_on_app_key")
   @@index([channelId], map: "index_ppb_orders_on_channel_id")
@@ -2663,24 +2673,25 @@ model ProductBundlePackageImages {
 
 // Stock
 model Stocks {
-  id                BigInt    @id @default(autoincrement())
-  sku               String?   @db.VarChar
-  available         Int       @default(0)
-  last_adjusted_at  DateTime? @db.Timestamp(6)
-  created_at        DateTime  @db.Timestamp(6)
-  updated_at        DateTime  @db.Timestamp(6)
-  barcode           String?   @db.VarChar
-  franchise_id      Int?
-  out_of_stock      Boolean?  @default(false)
-  out_of_stocked_at DateTime? @db.Timestamp(6)
-  average_price     Decimal?  @default(0.0) @db.Decimal
+  id             BigInt    @id @default(autoincrement())
+  sku            String?   @db.VarChar
+  available      Int       @default(0)
+  lastAdjustedAt DateTime? @map("last_adjusted_at") @db.Timestamp(6)
+  createdAt      DateTime  @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime  @map("updated_at") @db.Timestamp(6)
+  barcode        String?   @db.VarChar
+  franchiseId    BigInt?   @map("franchise_id")
+  outOfStock     Boolean?  @default(false) @map("out_of_stock")
+  outOfStockedAt DateTime? @map("out_of_stocked_at") @db.Timestamp(6)
+  averagePrice   Decimal?  @default(0.0) @map("average_price") @db.Decimal
 
   histories StockHistories[]
+  franchise Franchise?       @relation(fields: [franchiseId], references: [id])
 
-  @@unique([sku, franchise_id], map: "index_ppb_stocks_on_sku_and_franchise_id")
+  @@unique([sku, franchiseId], map: "index_ppb_stocks_on_sku_and_franchise_id")
   @@index([barcode], map: "index_ppb_stocks_on_barcode")
-  @@index([franchise_id], map: "index_ppb_stocks_on_franchise_id")
-  @@index([out_of_stock], map: "index_ppb_stocks_on_out_of_stock")
+  @@index([franchiseId], map: "index_ppb_stocks_on_franchise_id")
+  @@index([outOfStock], map: "index_ppb_stocks_on_out_of_stock")
   @@index([sku], map: "index_ppb_stocks_on_sku")
   @@map("ppb_stocks")
 }

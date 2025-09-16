@@ -4,10 +4,11 @@ import { Prisma as PrismaPpb } from '../../generated/ppb';
 import { PrismaPpbClientWrapper as PrismaPpbClient } from '../../wrapper';
 import { isDefined } from '../../utils';
 import type { SuccessResponse, ErrorResponse } from '../../types';
-import type { DTO } from './dto';
+import type { StockDTO, StockHistoryDTO, StockTransactionType } from './dto';
 // import { HeadOfficeFranchiseId } from './constants';
 
-const BaseSelectOption = {
+// stock
+const StockBaseSelectOption = {
   id: true,
   sku: true,
   available: true,
@@ -22,13 +23,29 @@ const BaseSelectOption = {
 } as const satisfies PrismaPpb.StocksSelect;
 
 type StockSelectBase = PrismaPpb.StocksGetPayload<{
-  select: typeof BaseSelectOption;
+  select: typeof StockBaseSelectOption;
+}>;
+
+const StockHistoriesBaseSelectOption = {
+  id: true,
+  stockId: true,
+  transactionType: true,
+  transactionQuantity: true,
+  stockHistoriableType: true,
+  stockHistoriableId: true,
+  available: true,
+  createdAt: true,
+  updatedAt: true,
+} as const satisfies PrismaPpb.StockHistoriesSelect;
+
+type StockHistoriesSelectBase = PrismaPpb.StockHistoriesGetPayload<{
+  select: typeof StockHistoriesBaseSelectOption;
 }>;
 
 export default class DBStocks {
   constructor(private prisma: PrismaPpbClient) {}
 
-  private transformEntity(entity: StockSelectBase): DTO['Entity'] {
+  private transformStockEntity(entity: StockSelectBase): StockDTO['Entity'] {
     const { id, franchiseId, averagePrice } = entity;
     return {
       ...entity,
@@ -38,20 +55,32 @@ export default class DBStocks {
     }
   }
 
-  async findStockBySku(franchiseId: string, sku: string): Promise<SuccessResponse<DTO['Entity'][]> | ErrorResponse> {
+  private transformStockHistoriesEntity(entity: StockHistoriesSelectBase): StockHistoryDTO['Entity'] {
+    const { id, transactionType, stockId, stockHistoriableId, transactionQuantity } = entity;
+    return {
+      ...entity,
+      id: id.toString(),
+      stockId: stockId.toString(),
+      transactionType: transactionType as StockTransactionType,
+      stockHistoriableId: stockHistoriableId ? stockHistoriableId.toString() : null,
+      transactionQuantity: transactionQuantity ? transactionQuantity.toString() : null,
+    }
+  }
+
+  async findStockBySku(franchiseId: string, sku: string): Promise<SuccessResponse<StockDTO['Entity'][]> | ErrorResponse> {
     const { success, data: list, error } = await this.prisma.executeWrapper(() => this.prisma.stocks.findMany({
       where: {
         sku,
         franchiseId: BigInt(franchiseId),
       },
-      select: BaseSelectOption,
+      select: StockBaseSelectOption,
     }));
 
     if (success) {
       return {
         success,
         data: list.map((data) => {
-          return this.transformEntity(data)
+          return this.transformStockEntity(data)
         }),
       }
     }
@@ -62,7 +91,7 @@ export default class DBStocks {
     }
   }
 
-  async create(inputData: Partial<DTO['Create']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+  async create(inputData: Partial<StockDTO['Create']>): Promise<SuccessResponse<StockDTO['Entity']> | ErrorResponse> {
     const input: PrismaPpb.StocksCreateInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -88,14 +117,14 @@ export default class DBStocks {
     const { success, data, error } = await this.prisma.executeWrapper(() =>
       this.prisma.stocks.create({
         data: input,
-        select: BaseSelectOption,
+        select: StockBaseSelectOption,
       })
     );
 
     if (success) {
       return {
         success,
-        data: this.transformEntity(data)
+        data: this.transformStockEntity(data)
       }
     }
 
@@ -105,7 +134,7 @@ export default class DBStocks {
     }
   }
 
-  async update(id: string, inputData: Partial<DTO['Update']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+  async update(id: string, inputData: Partial<StockDTO['Update']>): Promise<SuccessResponse<StockDTO['Entity']> | ErrorResponse> {
     const input: PrismaPpb.StocksUpdateInput = {
       updatedAt: new Date(),
     }
@@ -135,14 +164,14 @@ export default class DBStocks {
           id: BigInt(id),
         },
         data: input,
-        select: BaseSelectOption,
+        select: StockBaseSelectOption,
       })
     );
 
     if (success) {
       return {
         success,
-        data: this.transformEntity(data)
+        data: this.transformStockEntity(data)
       }
     }
 
@@ -152,4 +181,54 @@ export default class DBStocks {
     }
   }
 
+  async createStockHistory(stockId: string, inputData: Partial<StockHistoryDTO['Create']>): Promise<SuccessResponse<StockHistoryDTO['Entity']> | ErrorResponse> {
+    const input: PrismaPpb.StockHistoriesCreateInput = {
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      stock: {
+        connect: {
+          id: BigInt(stockId),
+        },
+      },
+    }
+
+    if (isDefined(inputData.transactionType)) {
+      input.transactionType = inputData.transactionType;
+    }
+
+    if (isDefined(inputData.transactionQuantity)) {
+      input.transactionQuantity = inputData.transactionQuantity;
+    }
+
+    if (isDefined(inputData.stockHistoriableType)) {
+      input.stockHistoriableType = inputData.stockHistoriableType;
+    }
+
+    if (isDefined(inputData.stockHistoriableId)) {
+      input.stockHistoriableId = BigInt(inputData.stockHistoriableId);
+    }
+
+    if (isDefined(inputData.available)) {
+      input.available = inputData.available;
+    }
+
+    const { success, data, error } = await this.prisma.executeWrapper(() =>
+      this.prisma.stockHistories.create({
+        data: input,
+        select: StockHistoriesBaseSelectOption,
+      })
+    );
+
+    if (success) {
+      return {
+        success,
+        data: this.transformStockHistoriesEntity(data),
+      }
+    }
+
+    return {
+      success,
+      error,
+    }
+  }
 }

@@ -9,13 +9,13 @@ export type DTO = {
     orderNo: string | null;
     raw: PrismaPpb.JsonValue;
     logType: OkposLogType;
-    processingStatus: OkposProcessingStatus;
+    processingStatus: OkposProcessingStatus | null;
     orderId: string | null;
     createdAt: Date;
     updatedAt: Date;
     responseBody: PrismaPpb.JsonValue;
   },
-  CreateInput: {
+  Create: {
     orderNo: string;
     raw: PrismaPpb.JsonValue;
     logType: OkposLogType;
@@ -25,7 +25,7 @@ export type DTO = {
     updatedAt: Date;
     responseBody: PrismaPpb.JsonValue;
   },
-  UpdateInput: {
+  Update: {
     processingStatus: OkposProcessingStatus;
     orderId: string;
     updatedAt: Date;

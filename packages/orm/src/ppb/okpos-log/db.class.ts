@@ -35,7 +35,7 @@ export default class DBOkposLogs {
     }
   }
 
-  async create(inputData: Partial<DTO['CreateInput']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+  async create(inputData: Partial<DTO['Create']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
     const input: PrismaPpb.OkposLogsCreateInput = {
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -89,7 +89,7 @@ export default class DBOkposLogs {
     }
   }
 
-  async update(id: string, inputData: Partial<DTO['UpdateInput']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
+  async update(id: string, inputData: Partial<DTO['Update']>): Promise<SuccessResponse<DTO['Entity']> | ErrorResponse> {
     const input: PrismaPpb.OkposLogsUpdateInput = {
       updatedAt: new Date(),
     }

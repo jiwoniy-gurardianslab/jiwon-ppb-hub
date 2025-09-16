@@ -1,9 +1,8 @@
 // import { Prisma as PrismaPpb } from '../../generated/ppb';
 
-export type OkposLogType = 'walk-in-create' | 'walk-in-cancel' | 'sale-status';
-export type OkposProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type StockTransactionType = 'sold' | 'hold' | 'restock' | 'adjust';
 
-export type DTO = {
+export type StockDTO = {
   Entity: {
     id: string;
     sku: string | null;
@@ -31,4 +30,25 @@ export type DTO = {
     outOfStockedAt: Date;
     averagePrice: string;
   }
+}
+
+export type StockHistoryDTO = {
+  Entity: {
+    id: string;
+    stockId: string;
+    transactionType: StockTransactionType | null;
+    transactionQuantity: string | null;
+    stockHistoriableType: string | null;
+    stockHistoriableId: string | null;
+    available: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+  },
+  Create: {
+    transactionType: string;
+    transactionQuantity: string;
+    stockHistoriableType: string;
+    stockHistoriableId: string;
+    available: number;
+  },
 }
